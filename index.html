@@ -1,0 +1,812 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>KUTHULU</title>
+    <meta name="description" content="DeSo v1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- FAVICON -->
+    <link rel="shortcut icon" href="images/logo/favicon.png">
+
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/animate.min.css" />
+<!--    <link rel="stylesheet" href="css/font-awesome.min.css" />-->
+    <link rel="stylesheet" href="css/themify-icons.css" />
+    <link rel="stylesheet" href="css/YTPlayer.css" />
+    <link rel="stylesheet" href="css/owl.carousel.css" />
+    <link rel="stylesheet" href="css/magnific-popup.css" />
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+
+    <style>
+
+        .lds-ring {
+            display: inline-block;
+            position: relative;
+            width: 22px;
+            height: 22px;
+            margin-right:14px;
+            top:-1px;
+        }
+        .lds-ring div {
+            box-sizing: border-box;
+            display: block;
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            margin: 8px;
+            border: 4px solid #fff;
+            border-radius: 50%;
+            animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+            border-color: #ad81fc transparent transparent transparent;
+        }
+        .lds-ring div:nth-child(1) {
+            animation-delay: -0.45s;
+        }
+        .lds-ring div:nth-child(2) {
+            animation-delay: -0.3s;
+        }
+        .lds-ring div:nth-child(3) {
+            animation-delay: -0.15s;
+        }
+        @keyframes lds-ring {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @font-face {
+            font-family: GameFont;
+            src: url('fonts/Anton.ttf');
+        }
+        .gameFont {
+            font-family: "GameFont", monospace;
+            /*text-shadow: 2px 2px 0 #3b3b3b;*/
+            letter-spacing: 2px;
+        }
+        .loadingMsg{
+            color: #17fe55;
+            letter-spacing: 1px;
+            font-size:16px
+        }
+        .betSel{
+            width:70px;
+            margin-left:10px;
+            margin-right:10px;
+        }
+        #walletInfo{
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            font-size: 10px;
+            z-index: 99;
+        }
+        .walletCon{
+            color: #17fe55;
+        }
+        .walletButton{
+            text-shadow: none;
+            color: #17fe55;
+            background-color: #47129f;
+            border-color: #17fe55;
+            padding-top:3px;
+        }
+        .walletButtonBig{
+            text-shadow: none;
+            color: #17fe55;
+            background-color: #47129f;
+            border-color: #17fe55;
+            font-size: 20px;
+            padding:10px;
+            margin:20px;
+        }
+        .emoji{
+            font-size: 19px;
+            position: relative;
+            top:-3px;
+        }
+        .butTreas{
+            float: left;
+            position: relative;
+            top: 6px;
+            margin-right: 15px;
+        }
+        #statusMsg{margin-top:10px;}
+        .moneyPrefix{
+            width:19px;
+            position: relative;
+            margin-right:6px;
+        }
+        .modal-content{
+            background-color: #7a7a7a;
+        }
+        .close{
+            color: #fff;
+            opacity: 1;
+        }
+
+        h4  {
+            font-size: 120%;
+        }
+        h3 .hero-heading-alt {
+            font-size: 160%;
+            letter-spacing: 4px;
+        }
+        .gameButtonBig {
+            font-size: 24px;
+            letter-spacing: 4px;
+        }
+        .gameButtonSmall {
+            font-size: 12px;
+            letter-spacing: 4px;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        .smallGameFont{font-size:16px;}
+        .goldFont {
+            color: #17fe55;
+        }
+        .places {
+            font-size: 24px;
+            letter-spacing: 4px;
+        }
+        .surfBoard{
+            position: absolute;
+            top: 90%;
+            width:86%;
+            z-index: 100;
+        }
+
+        #claimWinnings{
+            padding:15px;
+            background: rgba(0, 0, 0, .5);
+            margin:15px;
+            overflow: hidden;
+            border: dotted 5px #47129f;
+        }
+
+        .errorText{
+            color: #17fe55;
+            font-size:24px;
+        }
+
+        .messageWrapper {
+            border: solid 1px #b2b2b2;
+            padding:15px;
+            text-align: left;
+            background-color: rgba(0, 0, 0, 0.4);
+            margin-top:8px;
+            overflow:auto;
+        }
+
+        .messageRepostWrapper{
+            border: solid 1px #b2b2b2;
+            padding:15px;
+            text-align: left;
+            background-color: rgba(0, 0, 0, 0.4);
+            margin-top:10px;
+            margin-bottom:10px;
+        }
+
+        .avatar{
+            position:relative;
+            float:left;
+            min-width:40px;
+            margin-right:15px;
+        }
+
+        .avatarImg{
+            border-radius: 50%;
+            width:40px;
+            height:40px;
+            object-fit: cover;
+        }
+
+        .asGroupAvatar{
+            width:30px;
+            height:30px;
+            min-width: 30px;
+            border: solid #3b10b5 1px;
+        }
+
+        .nftImg{
+            border-radius: 10%;
+        }
+
+        .groupAvatarSel{
+            border:0px;
+            max-width:30px;
+            max-height:30px;
+            min-width:30px;
+            position: relative;
+            top: -2px;
+        }
+
+        .post{
+            position: relative;
+            float:left;
+            width:510px;
+        }
+
+        .repost{
+            position: relative;
+            float:left;
+            width:420px;
+        }
+
+        .name {
+            font-size:14px;
+            font-weight: 700;
+        }
+
+        .muted{
+            font-weight: 400;
+            color:#ccc;
+            font-size:12px;
+        }
+
+        .gs {
+            -webkit-filter: grayscale(100%);
+            filter: grayscale(100%);
+            opacity: 0.6;
+            filter: alpha(opacity=60);
+        }
+
+        .datePosted {
+            position:relative;
+            float:right;
+        }
+
+        .spacer{margin-left:67px;margin-top:-9px}
+
+        .actionIcon{
+            margin-right:10px;
+            top:-1px;
+            position:relative;
+        }
+
+        .actionVal{
+            font-size: 14px;
+            color:#05afd4;
+            margin-right:40px;
+        }
+
+        .profileTips{
+            float:right;
+        }
+
+        .tipsAmount{
+            margin-left:10px;
+        }
+
+        .postImg{
+            border-radius: 3%;
+            border: solid 1px #727272;
+            max-width:400px;
+            margin-top:10px;
+            margin-bottom:10px;
+            position: relative;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .actionWrapper{
+            margin-top:5px;
+        }
+
+        .profileAvatar{
+            position:relative;
+            float:left;
+            margin-right:20px;
+            margin-top:5px;
+        }
+
+        .profileAvatarImg{
+            border-radius:50%;
+            object-fit: cover;
+            height: 64px;
+            width: 64px;
+        }
+
+        .groupAvatar{
+            border-radius: 5%;
+        }
+
+        .profileName{
+            font-size:16px;
+            font-weight: 600;
+        }
+
+        .postMenu{
+            position: relative;
+            float:right;
+            margin-left:10px;
+            top:-2px;
+        }
+
+        .menuImage{
+            position: relative;
+            top:-2px;
+        }
+
+        .modal-body, .modal-header, .modal-footer{
+            background-color:#fff;
+        }
+
+        .name{
+            color: rgb(231, 233, 234);
+        }
+
+        .groupName{
+            font-weight: 200;
+            font-size:12px;
+            color: rgb(231, 233, 234);
+        }
+        .typeButton{
+            margin-left:2%;
+            margin-right:2%;
+        }
+        .postCounter{
+            font-size: 18px;
+        }
+
+        .wrapperAsGroupAvatar{
+            max-width: 600px;
+            width: 100%;
+            border-radius: 15px;
+            padding: 15px 25px 25px 20px;
+        }
+
+        #asGroupInitialAvatarWrapper{
+            margin-right:5px;
+        }
+
+        #asGroupInitialUsername{
+            position:relative;
+            float:left;
+            font-weight: 400;
+        }
+
+        .showCursor{
+            cursor: pointer;
+            font-size:14px;
+            color: #36254e;
+        }
+        .postHashtag{
+            color:#00AAF1;
+        }
+
+        .postTagged{
+            color: #ad81fc;
+        }
+
+        .postGroup{
+            color: #58ea5a;
+        }
+
+        .nameWrapperSelect{
+            position: relative;
+            top:6px;
+        }
+    </style>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<!--    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LB60TGVCF2"></script>-->
+<!--    <script>-->
+<!--        window.dataLayer = window.dataLayer || [];-->
+<!--        function gtag(){dataLayer.push(arguments);}-->
+<!--        gtag('js', new Date());-->
+
+<!--        gtag('config', 'G-LB60TGVCF2');-->
+<!--    </script>-->
+    <link rel="stylesheet" href="css/boxstyle.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v3.0.6/css/line.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+</head>
+
+<body>
+
+
+<!-- Pageloader -->
+<div class="page-loader">
+    <div class="loader">
+        <div class='loader-style-1 panelLoad'>
+            <div class='cube-face cube-face-front'>K</div>
+            <div class='cube-face cube-face-back'>R</div>
+            <div class='cube-face cube-face-left'>Y</div>
+            <div class='cube-face cube-face-right'>P</div>
+            <div class='cube-face cube-face-bottom'>T</div>
+            <div class='cube-face cube-face-top'>O</div>
+        </div>
+        <!-- /Cube panelload -->
+        <span class="cube-face">KRYPTO</span>
+    </div>
+    <!-- /loader -->
+</div>
+<!-- /Page-loader -->
+
+
+<div class="side-nav op-nav">
+
+    <nav class="sidebar-inner light sidebar-nav">
+        <a href="#" class="brand-logo mrg-vertical-30 mrg-left-15">
+            <img class="img-responsive" src="images/KUTHULU.png" alt="">
+        </a>
+        <ul class="sidebar-menu" id="sideLinks">
+            <li id="myProfile"></li>
+            <li><a class="scroll-to" href="https://www.kryptosucks.com/">Krypto Sucks! Podcast</a></li>
+        </ul>
+        <!-- /side-bar-menu -->
+
+        <div class="sidebar-bottom">
+            <div class="social-icon mrg-top-15 text-center">
+                <a href="https://www.Twitter.com/KryptoSucks" target="_blank" class="btn btn-icon twitter border no-border circle text-dark"><i class="ti-twitter"></i></a>
+                <a href="https://www.youtube.com/channel/UCtLfIdOKt6Ep0EB3gHpOI6Q" target="_blank" class="btn btn-icon youtube border no-border circle text-dark"><i class="ti-youtube"></i></a>
+                <a href="https://discord.gg/atfGXANP" target="_blank" class="btn btn-icon instagram border no-border circle text-dark"><img src="images/discord.png" style="width:20px;" alt="discord "/></a>
+                <a href="https://opensea.io/collection/sgmarinesandaliens" target="_blank" class="btn btn-icon opensea border no-border circle text-dark"><img src="images/opensea.png" style="width:20px;" alt="opensea "/></a>
+            </div>
+            <!-- /social-icon -->
+            <h6 class="text-center">© 2022 Krypto Sucks!</h6>
+        </div>
+        <!-- /sidebar-bottom -->
+
+    </nav>
+    <!-- /sidebar-inner -->
+
+
+    <div class="main-content-wrapper">
+
+        <div id="walletInfo">
+            <div id="mm"></div>
+            <div id="mmConn"></div>
+            <div id="loading">
+                <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+                <span id="loadMsg" class="gameFont loadingMsg"></span>
+            </div>
+        </div>
+
+
+        <!-- Sidebar Toggle -->
+        <a class="sidebar-toggle" href="#menu-toggle" id="menu-toggle"><i class="ti-menu"></i></a>
+        <!-- /Sidebar Toggle -->
+
+
+        <!-- Full Screen Image Parallax -->
+        <section id="home" class="parallax parallax-overlay-dark section-3" style="background-image:url(images/bg.jpg); padding-top:0px;">
+            <div class="container">
+
+                <div class="text-center" id="game">
+
+                    <br><br>
+
+                    <h3 class="hero-heading-alt gameFont">
+                        <a href="index.html">
+                            <span style="font-size: 100px; text-shadow: none; background-image: linear-gradient(0deg, #2a08ab, #6d27d5); -webkit-text-stroke-width: 1px; -webkit-text-stroke-color: black; -webkit-background-clip: text; -webkit-text-fill-color: transparent; ">
+                                KUTHULU
+                            </span>
+                        </a>
+                    </h3>
+
+                    <div id="statusMsg"></div>
+
+                    <div id="claimWinnings" style="display:none;"></div>
+
+                    <div id="connectWalletToPost">
+                        <input type="button" class="walletButtonBig gameFont gameButtonBig" onclick="connectWallet()" value="Connect Wallet Post" />
+                    </div>
+                    <div id="connectWalletToPolygon" style="display:none;">
+                        <input type="button" class="walletButtonBig gameFont gameButtonBig" onclick="connectToPolygon()" value="Click to Switch to Polygon" />
+                    </div>
+
+
+                    <!-- Entrants -->
+                    <div class="container" id="postBox">
+
+                        <div id="mintGroupWrapper" style="display: none;">
+                            <input id="mintGroup" type="button" class="walletButtonBig gameFont gameButtonBig" onclick="mintGroup()" value="Mint Group" />
+                            Group: <input id="groupToMint" />
+                        </div>
+                        <div id="mintGroupLink"><a href="#lsRet" onclick="$('#mintGroupLink').hide();$('#mintGroupWrapper').slideDown();$('#groupToMint').focus();">Mint a Group</a></div>
+
+                        <div style="margin-bottom:20px;">
+
+                            <div style="width:500px;margin-left:auto;margin-right:auto;">
+
+                                <div id="postAs" class="wrapperAsGroupAvatar" style="text-align:left;position:relative;top:36px;z-index: 1;background-color:#ad81fc;padding-bottom:40px;">
+                                    <div class="input-box" style="border-bottom:0px;position:relative;top:-3px;" id="inputWrapperPostAs">
+                                        <div style="color:#000;position:relative;top:-2px;">
+
+                                            <div class="dropdown asGroupWrapper dropup">
+                                                <span class="dropdown-toggle" href="#lsRet" role="button" data-toggle="dropdown" aria-expanded="false" id="selectedAsGroup" >
+
+                                                    <div class="avatar" id="asGroupInitialAvatarWrapper">
+                                                        <img src="images/user.png" class="avatarImg menuImage asGroupAvatar" id="asGroupInitialAvatar" />
+                                                    </div>
+
+                                                    <div class="nameWrapper" id="asGroupInitialUsername">
+                                                        username
+                                                    </div>
+
+                                                </span>
+
+                                                <div class="dropdown-menu" style="z-index: 10000;position: relative;width:100%;" id="asGroups"></div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="text-align:left;z-index: 10;position: relative;background: rgb(0, 0, 0);  max-width: 600px;width: 100%;border-radius: 15px;padding: 25px 25px 15px 25px;box-shadow: 0px 10px 15px rgba(0,0,0,0.1);" id="pseudoPostArea">
+                                    <div class="" style="border-bottom: 0px;height:30px;">
+                                        <div style="color:#d5d5d5;height:50px;outline: none;font-size: 17px;min-height: inherit;word-wrap: break-word;word-break: break-all;" onclick="$('#postArea').slideDown();$('#pseudoPostArea').hide();$('#editHere').focus()">
+                                            <span>Add to the madness...</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="wrapper" style="display:none;text-align:left;z-index: 10;position: relative;background: rgb(0, 0, 0);" id="postArea">
+                                    <div class="input-box">
+                                        <div class="tweet-area" style="color:#d5d5d5;">
+                                            <span class="placeholder">Add to the madness...</span>
+                                            <div class="input editable" contenteditable="true" spellcheck="false" id="editHere"></div>
+                                            <div class="input readonly" contenteditable="true" spellcheck="false" id="readHere"></div>
+                                        </div>
+                                        <div class="privacy" onclick="changePrivacy();">
+                                            <i class="fa fa-comment"></i><span>Everyone can reply</span>
+                                        </div>
+                                    </div>
+                                    <div class="bottom">
+                                        <ul class="icons" style="position:relative;top:12px;">
+                                            <li onclick="$('#uriWrapper').slideToggle();"><i class="fas fa-link"></i></li>
+                                            <li onclick="$('#hashtagWrapper').slideToggle();"><i class="fas fa-hashtag"></i></li>
+                                            <li onclick="$('#tagsWrapper').slideToggle();"><i class="far fa-user"></i></li>
+                                            <li onclick="$('#tipsWrapper').slideToggle();"><i class="fab fa-ethereum"></i></li>
+                                            <li onclick="$('#groupsWrapper').slideToggle();"><i class="fas fa-users"></i></li>
+                                        </ul>
+                                        <div class="content">
+                                            <span class="postCounter">420</span>
+                                            <button onclick="postMsg()">Post</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="uriWrapper" class="wrapper" style="display:none;text-align:left;position:relative;top:-25px;z-index: 1;background-color:#ad81fc;padding-top:40px;">
+                                    <div class="input-box" style="border-bottom:0px;" id="inputWrapperURI" onclick="$('.placeholderURI').hide();$('.inputURI').show();$('.inputURI').focus();">
+                                        <span class="placeholderURI" style="color:#000;pointer-events: none;font-weight: 400;">URL: https://www.something.com/awesome/to/share.jpg</span>
+                                        <div class="inputURI" contenteditable="true" spellcheck="false" style="display: none;outline:none;color:#000;" onkeyup="$('#uri').val(this.innerHTML);"></div>
+                                    </div>
+                                </div>
+
+                                <div id="hashtagWrapper" class="wrapper" style="display:none;text-align:left;position:relative;top:-25px;z-index: 1;background-color:#ad81fc;padding-top:40px;">
+                                    <div class="input-box" style="border-bottom:0px;" id="inputWrapperHashtag" onclick="$('.placeholderHashtag').hide();$('.inputHashtag').show();$('.inputHashtag').focus();">
+                                        <span class="placeholderHashtag" style="color:#000;pointer-events: none;font-weight: 400;">Hashtags: cryptolife, freespeach, nocensorship</span>
+                                        <div class="inputHashtag" contenteditable="true" spellcheck="false" style="display: none;outline:none;color:#000;" onkeyup="$('#hashtags').val(this.innerHTML);"></div>
+                                    </div>
+                                </div>
+
+                                <div id="tagsWrapper" class="wrapper" style="display:none;text-align:left;position:relative;top:-25px;z-index: 1;background-color:#ad81fc;padding-top:40px;">
+                                    <div class="input-box" style="border-bottom:0px;" id="inputWrapperTags" onclick="$('.placeholderTags').hide();$('.inputTags').show();$('.inputTags').focus();">
+                                        <span class="placeholderTags" style="color:#000;pointer-events: none;font-weight: 400;">Tagged Users: 0x123...,0x456...</span>
+                                        <div class="inputTags" contenteditable="true" spellcheck="false" style="display: none;outline:none;color:#000;" onkeyup="$('#tags').val(this.innerHTML);"></div>
+                                    </div>
+                                </div>
+
+                                <div id="tipsWrapper" class="wrapper" style="display:none;text-align:left;position:relative;top:-25px;z-index: 1;background-color:#ad81fc;padding-top:40px;">
+                                    <div class="input-box" style="border-bottom:0px;" id="inputWrapperTips" onclick="$('.placeholderTips').hide();$('.inputTips').show();$('.inputTips').focus();">
+                                        <span class="placeholderTips" style="color:#000;pointer-events: none;font-weight: 400;">Tips in MATIC to Tagged Users: 1.23</span>
+                                        <div class="inputTips" contenteditable="true" spellcheck="false" style="display: none;outline:none;color:#000;" onkeyup="$('#tips').val(this.innerHTML);"></div>
+                                    </div>
+                                </div>
+
+                                <div id="groupsWrapper" class="wrapper" style="display:none;text-align:left;position:relative;top:-25px;z-index: 1;background-color:#ad81fc;padding-top:40px;">
+                                    <div class="input-box" style="border-bottom:0px;" id="inputWrapperGroups" onclick="$('.placeholderGroups').hide();$('.inputGroups').show();$('.inputGroups').focus();">
+                                        <span class="placeholderGroups" style="color:#000;pointer-events: none;font-weight: 400;">In Group(s): MintOfDestiny, KryptoSucks, KUTHULU</span>
+                                        <div class="inputGroups" contenteditable="true" spellcheck="false" style="display: none;outline:none;color:#000;" onkeyup="$('#inGroups').val(this.innerHTML);"></div>
+                                    </div>
+                                </div>
+
+                                <div id="commentWrapper" class="wrapper" style="display:none;text-align:left;position:relative;top:-25px;z-index: 1;background-color:#d6c1ff;padding-top:40px;">
+                                    <div class="input-box" style="border-bottom:0px;" id="inputWrapperComment">
+                                        <div class="inputComment" style="color:#000;">Comment goes here</div>
+                                    </div>
+                                </div>
+
+<!--                                <textarea name="msg" id="msg" style="width:400px;height:120px;" onkeyup="checkLen();">This is the best dApp ever!</textarea>-->
+<!--                                <div class="float-right" id="remaining">140</div>-->
+                            </div>
+                            <div class="clearfix"></div>
+
+<!--                            <input id="postit" type="button" class="walletButtonBig gameFont gameButtonBig" onclick="postMsg()" value="Post it" />-->
+                            <input id="approveit" style="display:none;" type="button" class="walletButtonBig gameFont gameButtonBig" onclick="approve()" value="Approve DOOM Spending" />
+                            <input id="buyIt" style="display:none;" onclick="mintDOOM(100);" type="button" class="walletButtonBig gameFont gameButtonBig" value="Buy 100 DOOM for 1 MATIC" />
+
+                        </div>
+
+                        <input type="hidden" id="uri" />
+                        <input type="hidden" id="commentLevel" value="1" />
+                        <input type="hidden" id="hashtags" />
+                        <input type="hidden" id="tags" />
+                        <input type="hidden" id="tips" />
+                        <input type="hidden" id="inGroups" />
+                        <input type="hidden" id="commentTo" />
+                        <input type="hidden" id="repostOf" />
+                        <input type="hidden" id="asGroupID" />
+
+                        <div class="row justify-content-center" id="msgs"></div>
+                    </div>
+                    <!-- /Entrants -->
+
+                    <div id="profileWrapper" style="margin-left:auto;margin-right:auto;max-width:600px;font-weight:400;"></div>
+                    <div id="postsWrapper" style="margin-left:auto;margin-right:auto;max-width:600px;font-weight:400;"></div>
+
+                </div>
+                <!-- /hero-caption -->
+            </div>
+            <!-- /fs-img-parallax -->
+        </section>
+        <!--/#Full Screen Slider -->
+
+
+
+        <!-- FAQ -->
+        <section id="faq" class="bg-dark-gray" style="padding-top:30px;padding-bottom:30px;">
+
+            <div class="container text-center">
+                <h3 class="gameFont text-white hero-heading-alt" style="margin-bottom:40px;margin-top:15px;">FAQ</h3>
+                <div id="faqWrapper" class="text-left">
+
+                    <h1 class="gameFont text-white">How to Bridge <span class="paymentToken"></span> to Polygon</h1>
+                    <p class="text-white font-weight-bold">
+                        Additionally, you'll need MATIC to pay for gas fees on Polygon. You can purchase MATIC on <a href="https://www.uniswap.com" target="_blank">Uniswap</a> and then repeat the bridging process
+                        above to send it to Polygon. Once you have your <span class="paymentToken"></span> and MATIC transferred over to Polygon, you're good to go!
+                    </p>
+
+                    <h1 class="gameFont text-white" style="margin-top:50px;margin-bottom:15px;">How do I add Polygon Network to my Wallet?</h1>
+                    <p class="text-white font-weight-bold">
+                        Click this button =)
+                        <br><input type="button" class="btn btn-sm btn-style-2 gameFont gameButtonSmall" style="margin-top:15px;" onclick="connectToPolygon('add');" value="+Polygon Network to Wallet" />
+                        <br>
+                        If it's already added to your wallet, you can switch over to it by selecting it in your wallet, or clicking this buttom:
+                        <br><input type="button" class="btn btn-sm btn-style-2 gameFont gameButtonSmall" style="margin-top:15px;" onclick="connectToPolygon();" value="Connect to Polygon" />
+                    </p>
+
+                    <h1 class="gameFont text-white" style="margin-top:50px;margin-bottom:15px;">How do I add DOOM to my wallet?</h1>
+                    <p class="text-white font-weight-bold">
+                        Click on these buttons =)
+                        <br>
+                        <input type="button" class="btn btn-sm btn-style-2 gameFont gameButtonSmall" style="margin-top:15px;" onclick="addTokenToMetaMask('DOOM')" value="+DOOM to Wallet" />
+                    </p>
+                </div>
+            </div>
+
+        </section>
+        <!-- /#FAQ -->
+
+
+
+
+        <!-- Back to top -->
+        <a href="#" id="back-to-top" title="Back to top"><i class="ti-angle-up"></i></a>
+        <!-- /Back to top -->
+    </div>
+    <!-- /main-content-wrapper -->
+
+</div>
+<!-- /side-nav -->
+
+
+<!-- Modal Windows -->
+<div id="tokenCollection" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content" style="max-height: 75%;">
+            <div class="modal-header">
+                <h3 class="modal-title gameFont text-white" style="position: relative;margin-left:auto;text-align:center;">Nominate your Surfung Champion!</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row justify-content-center" id="tokenSelector"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="wndBets" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content" style="max-height: 75%;">
+            <div class="modal-header">
+                <h3 class="modal-title gameFont text-white" style="position: relative;margin-left:auto;text-align:center;">Super Pool Bets for this round</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="text-center" id="wndBetsListing"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Modal Windows -->
+
+<!-- JS Plugin -->
+<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+<script type="text/javascript" src="js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="js/jquery.mb.YTPlayer.js"></script>
+<script type="text/javascript" src="js/owl.carousel.min.js"></script>
+<script type="text/javascript" src="js/wow.min.js"></script>
+<script type="text/javascript" src="js/jquery.parallax-1.1.3.js"></script>
+<script type="text/javascript" src="js/jquery.countTo.js"></script>
+<script type="text/javascript" src="js/jquery.countdown.min.js"></script>
+<script type="text/javascript" src="js/jquery.appear.js"></script>
+<script type="text/javascript" src="js/jquery.magnific-popup.min.js"></script>
+<script type="text/javascript" src="js/imagesloaded.pkgd.min.js"></script>
+<script type="text/javascript" src="js/isotope.pkgd.min.js"></script>
+<script type="text/javascript" src="js/email.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+<script src="js/boxscript.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.min.js" integrity="sha512-Y2IiVZeaBwXG1wSV7f13plqlmFOx8MdjuHyYFVoYzhyRr3nH/NMDjTBSswijzADdNzMyWNetbLMfOpIPl6Cv9g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.css" integrity="sha512-Velp0ebMKjcd9RiCoaHhLXkR1sFoCCWXNp6w4zj1hfMifYB5441C+sKeBl/T/Ka6NjBiRfBBQRaQq65ekYz3UQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+<script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+<script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
+<script type="text/javascript" src="js/thegame-slayer.js?v=2"></script>
+
+<script>
+    window.addEventListener('load', async() => {
+        $('html, body').animate({ scrollTop: 0 }, 'fast');
+    });
+
+    function changePrivacy(){
+        if (parseInt($('#commentLevel').val()) === 0){
+            $('#commentLevel').val(1);
+            $('.privacy').html('<i class="fas fa-comment"></i><span>Everyone can reply</span>');
+        } else {
+            $('#commentLevel').val(0);
+            $('.privacy').html('<i class="fas fa-comment-slash"></i><span>No one can reply</span>');
+        }
+    }
+
+    function toggleComment(msgID, isRepost){
+        if (isRepost) {
+            $('#repostOf').val(msgID);
+        } else {
+            $('#commentTo').val(msgID);
+        }
+        $('.inputComment').html($('#' + msgID + '-message').html() + '<div style="margin-top:6px;">@' + $('#' + msgID + '-name').html() + '</div>');
+        if (isRepost){
+            $('.placeholder').html('Repost with a comment');
+        } else {
+            $('.placeholder').html('Comment on a post');
+        }
+        $('#commentWrapper').slideDown();
+        $('html, body').animate({ scrollTop: 0 }, 'fast');
+    }
+
+    function showComments(msgID){
+        $('#comments-' + msgID).toggle();
+    }
+
+    $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+        event.preventDefault();
+        $(this).ekkoLightbox();
+    });
+</script>
+
+</body>
+
+</html>
