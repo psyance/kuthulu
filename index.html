@@ -85,7 +85,7 @@
             position: fixed;
             top: 25px;
             left: 25px;
-            font-size: 10px;
+            font-size: 14px;
             z-index: 99;
         }
         .walletCon{
@@ -394,6 +394,22 @@
         .nameWrapperSelect{
             position: relative;
             top:6px;
+        }
+
+        @keyframes fade {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .fade-in-out {
+            animation: fade 2s infinite;
         }
     </style>
 
