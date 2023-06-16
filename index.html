@@ -513,7 +513,9 @@
                             <input id="mintGroup" type="button" class="walletButtonBig gameFont gameButtonBig" onclick="mintGroup()" value="Mint Group" />
                             Group: <input id="groupToMint" />
                         </div>
-                        <div id="mintGroupLink"><a href="#lsRet" onclick="$('#mintGroupLink').hide();$('#mintGroupWrapper').slideDown();$('#groupToMint').focus();">Mint a Group</a></div>
+                        <div id="mintGroupLink">
+                            <span onclick="$('#mintGroupLink').hide();$('#mintGroupWrapper').slideDown();$('#groupToMint').focus();" style="cursor: pointer;color:turquoise;">Mint a Group</span>
+                        </div>
 
                         <div style="margin-bottom:20px;">
 
@@ -690,6 +692,15 @@
         </section>
         <!-- /#FAQ -->
 
+        <!-- #Footer -->
+        <section id="footer" style="padding-top:30px;padding-bottom:30px;background-color:#AAA;">
+
+            <div class="container text-center">
+                <a href="/images/canary-overview.jpg" data-toggle="lightbox" data-max-width="550" id="canary"></a>
+            </div>
+
+        </section>
+        <!-- /#Footer -->
 
 
 
