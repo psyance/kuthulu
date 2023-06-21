@@ -43,7 +43,7 @@ let validChainID = chainIDRaw.toString()
 
 // Contract Addresses
 let contractAddress = '0x6B25B629E017B6f0e60F297FeB60B0aDc3DC25f7';
-let contractAddressTokens = '0x2ECF9Ff1B7e1139C4adB521C034CD2874B8bc396';
+let contractAddressDOOM = '0x2ECF9Ff1B7e1139C4adB521C034CD2874B8bc396';
 // let contractAddressKUtils = '0x436C37BE8876016A9670Cc16D81A16135172D09a';
 let contractAddressGroupsTokens = '0x22Cc86760343473EB44FEC0a98dC5e40f049398d';
 let contractAddressGroups = '0xba9975061FD8EaA82327d25A2C8D8Ac8CB103Ee7';
@@ -64,7 +64,7 @@ let contractAddressTagged = '0x8A6753a89C66EB6f16d47dbD5CBB3557e5342813';
 // let contractKultists = '0x1417984f4CC5d04F07b854090c8B9e4BC957BD6A';
 let contractAddressRaffleTix = '0xEb240D9DDc9482D3d2BFc75b708BB059ca7188f1';
 // let contractSOULS = '0xb56225303810e66c71a404DD262B198a0db61f71';
-// let contractRewards = '0x779eBd04D326951e660965c7902AC8934B722e5f';
+// let contractRewards = '0x540d3B9214C2552dE2E7A3d0907034550BADea98';
 // let contractAddressSampleContractHook = '0x5AF1d48Db17A6026929041Df8C3Cc30f19803B55';
 
 
@@ -87,8 +87,8 @@ const abiRaffleTickets = [{"inputs":[],"stateMutability":"nonpayable","type":"co
 // Contract Interfaces
 let contractKUTHULU = new web3inf.eth.Contract(abiKUTHULU, contractAddress);
 let contractKUTHULUPub = new web3.eth.Contract(abiKUTHULU, contractAddress);
-let contractKUTHULUTokens = new web3inf.eth.Contract(abiTokens, contractAddressTokens);
-let contractKUTHULUTokensPub = new web3.eth.Contract(abiTokens, contractAddressTokens);
+let contractKUTHULUTokens = new web3inf.eth.Contract(abiTokens, contractAddressDOOM);
+let contractKUTHULUTokensPub = new web3.eth.Contract(abiTokens, contractAddressDOOM);
 let contractGroupTokens = new web3inf.eth.Contract(abiGroupTokens, contractAddressGroupsTokens);
 let contractGroupTokensPub = new web3.eth.Contract(abiGroupTokens, contractAddressGroupsTokens);
 let contractGroups = new web3inf.eth.Contract(abiGroups, contractAddressGroups);
@@ -163,7 +163,7 @@ async function start() {
     
     if (!testCall){
         // Try Alchemy
-        let testContract = new web3alc.eth.Contract(abiTokens, contractAddressTokens);
+        let testContract = new web3alc.eth.Contract(abiTokens, contractAddressDOOM);
 
         testCall = await testContract.methods.balanceOf('0x0000000000000000000000000000000000000000').call()
             .then(result => {
@@ -202,7 +202,7 @@ async function start() {
                 return result;
             })
             .catch(err => {
-                catchError('checkTips', err);
+                catchError('contractRaffleTix', err);
             });
 
         // See if they own any groups
@@ -230,7 +230,7 @@ async function start() {
 
 function switchProvider(goodProvider){
     contractKUTHULU = new goodProvider.eth.Contract(abiKUTHULU, contractAddress);
-    contractKUTHULUTokens = new goodProvider.eth.Contract(abiTokens, contractAddressTokens);
+    contractKUTHULUTokens = new goodProvider.eth.Contract(abiTokens, contractAddressDOOM);
     contractGroupTokens = new goodProvider.eth.Contract(abiGroupTokens, contractAddressGroupsTokens);
     contractGroups = new goodProvider.eth.Contract(abiGroups, contractAddressGroups);
     contractProfiles = new goodProvider.eth.Contract(abiProfiles, contractAddressProfiles);
@@ -299,7 +299,7 @@ async function checkWallet(attempt) {
                 console.log('MetaMask Connected to: ' + walletAddress);
 
                 // Get their MATIC Balance
-                userMATICBalance = await web3.eth.getBalance(walletAddress);;
+                userMATICBalance = await web3.eth.getBalance(walletAddress);
 
                 // Get their DOOM Balance
                 userDOOMBalance = await contractKUTHULUTokens.methods.balanceOf(walletAddress).call()
@@ -488,13 +488,15 @@ async function postMsg() {
         let hashtags = [];
         let tags = [];
         let tips = $('#tips').val();
+        let tokenContract = $('#token').val();
         let uri = $('#uri').val();
         let commentLevel = parseInt($('#commentLevel').val());
         let commentTo = $('#commentTo').val();
         let repostOf = $('#repostOf').val();
         let inGroups = [];
         let asGroup = $('#asGroupID').val();
-        let tipType = 0;    //TODO: allow ERC-20 tokens as tips
+        let erc20TipAmount = 0;
+        let validTipContract = parseInt($('#tipsValid').val());
 
         if (asGroup.length > 2){
             asGroup = await contractGroupTokens.methods.getGroupID(asGroup).call()
@@ -530,12 +532,31 @@ async function postMsg() {
         }
 
         for (let t=0;t<tags.length;t++){
-            if (! await validateTag(tags[t])){
+            if (!validateTag(tags[t])){
                 alert(tags[t] + ' is not a valid Ethereum address');
                 endLoading();
                 return;
             }
         }
+
+
+        // Check for tips
+        console.log('validTipContract, ', validTipContract);
+        console.log('parseFloat(tips), ', parseFloat(tips));
+        if (validTipContract === 0 && parseFloat(tips) > 0){
+            alert('You need to verify your tips first');
+            endLoading();
+            return;
+        }
+
+        console.log(tags);
+
+        if (tips > 0 && tags.length === 0){
+            alert('You need to tag at least 1 user to use tips');
+            endLoading();
+            return;
+        }
+
 
 
         if ($('#inGroups').val() !== ''){
@@ -569,8 +590,22 @@ async function postMsg() {
             asGroup = 0;
         }
 
-        if (tipType === '' || tipType === null || tipType === undefined){
-            tipType = 0;
+        if (tokenContract === '' || tokenContract === null || tokenContract === undefined || tokenContract === 'MATIC'){
+            erc20TipAmount = 0;
+        } else {
+            // Setup for ERC-20 token tipping
+            erc20TipAmount = web3.utils.toWei(tips.toString(), 'ether');
+
+            // Set MATIC tips to 0
+            tips = 0;
+
+            if (!validateTag(tokenContract)){
+                alert(tokenContract + ' is not a valid ERC-20 Contract address');
+                endLoading();
+                return;
+            }
+
+            tags.push(tokenContract);
         }
 
         if (commentTo === '' || commentTo === null){
@@ -607,7 +642,7 @@ async function postMsg() {
         console.log('tags: ', tags);
         console.log('tips: ', tips);
         console.log('uri: ', uri);
-        console.log('attribs: ', [commentLevel, commentTo, repostOf, asGroup, tipType]);
+        console.log('attribs: ', [commentLevel, commentTo, repostOf, asGroup, erc20TipAmount]);
         console.log('inGroups: ', inGroups);
 
 
@@ -624,7 +659,7 @@ async function postMsg() {
             ["string"],
             [ uri ],
             ["uin256[5]"],
-            [ [commentLevel, commentTo, repostOf, asGroup, tipType] ],
+            [ [commentLevel, commentTo, repostOf, asGroup, erc20TipAmount.toString()] ],
             ["uint256[]"],
             [ inGroups ],
             ); // array to encode
@@ -638,7 +673,7 @@ async function postMsg() {
         const ethWalletAddress = ethAccounts[0]
         const signer = provider.getSigner(ethWalletAddress)
         const doomContract = new ethers.Contract(contractAddress, abiKUTHULU, signer)
-        const estimatedGasLimit = await doomContract.estimateGas.postMsg(message, hashtags, tags, uri, [commentLevel, commentTo, repostOf, asGroup, tipType], inGroups, {value: ethers.utils.parseEther(tips.toString())})
+        const estimatedGasLimit = await doomContract.estimateGas.postMsg(message, hashtags, tags, uri, [commentLevel, commentTo, repostOf, asGroup, erc20TipAmount.toString()], inGroups, {value: ethers.utils.parseEther(tips.toString())})
             .then(async (result) => {
                 console.log('Gas Estimate: ', result.toString());
                 return result;
@@ -658,9 +693,19 @@ async function postMsg() {
             "chainId": chainIDRaw
         };
 
+        console.log("MESSAGE: ", message);
+        console.log("HASHTAGS: ", hashtags);
+        console.log("TAGS: ", tags);
+        console.log("URI: ", uri);
+        console.log("COMMENT LEVEL: ", commentLevel);
+        console.log("COMMENT TO: ", commentTo);
+        console.log("REPOST OF: ", repostOf);
+        console.log("AS GROUP: ", asGroup);
+        console.log("ERC20 TIP AMOUNT: ", erc20TipAmount);
+        console.log("IN GROUPS: ", inGroups);
         console.log('TRANSACTION: ', transaction);
 
-        let resp = await contractKUTHULUPub.methods.postMsg(message, hashtags, tags, uri, [commentLevel, commentTo, repostOf, asGroup, tipType], inGroups).send(transaction)
+        let resp = await contractKUTHULUPub.methods.postMsg(message, hashtags, tags, uri, [commentLevel, commentTo, repostOf, asGroup, erc20TipAmount.toString()], inGroups).send(transaction)
             .then(async (result) => {
                 console.log('Post Results: ', result);
 
@@ -683,7 +728,7 @@ async function postMsg() {
 }
 
 
-async function validateTag(tag){
+function validateTag(tag){
     return web3.utils.isAddress(tag);
 }
 
@@ -856,7 +901,7 @@ async function mintDOOM(amount){
     const provider = new ethers.providers.Web3Provider(ethereum)
     const ethWalletAddress = ethAccounts[0]
     const signer = provider.getSigner(ethWalletAddress)
-    const tokensContract = new ethers.Contract(contractAddressTokens, abiTokens, signer)
+    const tokensContract = new ethers.Contract(contractAddressDOOM, abiTokens, signer)
     const estimateGas = await tokensContract.estimateGas.publicMint(amount, {value: Math.trunc(costToMint).toString()});
 
     console.log('Gas Estimate: ', estimateGas);
@@ -871,7 +916,7 @@ async function mintDOOM(amount){
     const transaction = {
         "value": costToMint,
         "from": walletAddress,
-        "to": contractAddressTokens,
+        "to": contractAddressDOOM,
         "data": params,
         "gas": web3.utils.toHex(Math.trunc(estimateGas * 1.10)),
         "gasLimit": web3.utils.toHex(Math.trunc(estimateGas * 1.10)),
@@ -971,7 +1016,7 @@ async function addTokenToMetaMask(tokenName){
         var tokenImage;
 
         if (tokenName.toLowerCase() === 'doom') {
-            tokenAddress = contractAddressTokens.toString();
+            tokenAddress = contractAddressDOOM.toString();
             tokenSymbol = 'DOOM';
             tokenDecimals = 18;
             tokenImage = 'https://kryptosucks.s3.amazonaws.com/tokens/doom/doom_token.png';
@@ -1609,6 +1654,7 @@ async function getPosts() {
     let qsAdmins = qs.get('admins');
     let qsFollowing = qs.get('following');
     let qsFollowers = qs.get('followers');
+    let qsOnlyFollowing = qs.get('onlyFollowing');
 
     if (qsHashtag && qsHashtag !== ''){
         msgIDs = await contractKUTHULU.methods.getMsgIDsByHashtag(qsHashtag, 0).call()
@@ -1830,7 +1876,7 @@ async function getPosts() {
     // console.log('IDs to get: ', msgIDs);
 
     if (msgIDs.length > 0) {
-        let pResp = await processMessages(msgIDs, false, showMoreButton);
+        let pResp = await processMessages(msgIDs, false, showMoreButton, qsOnlyFollowing);
         $('.comments').show();
 
         // Scroll to the comment
@@ -1844,11 +1890,21 @@ async function getPosts() {
     endLoading();
 }
 
-async function processMessages(msgIDs, isComment, showMoreButton){
+async function processMessages(msgIDs, isComment, showMoreButton, getOnlyFollowing){
 
     console.log("IDs to get: ", msgIDs);
 
-    let posts = await contractKUTHULU.methods.getMsgsByIDs(msgIDs, false, '0x0000000000000000000000000000000000000000').call()
+    let getForAddress = '0x0000000000000000000000000000000000000000';
+    if (getOnlyFollowing){
+        getForAddress = walletAddress;
+    }
+
+    console.log("*");
+    console.log(getOnlyFollowing);
+    console.log(getForAddress);
+    console.log("*");
+
+    let posts = await contractKUTHULU.methods.getMsgsByIDs(msgIDs, getOnlyFollowing, getForAddress).call()
         .then(result => {
             result = formatMsgRespToJSON(result);
             console.log('Message Data:', result);
@@ -1904,7 +1960,7 @@ async function processMessages(msgIDs, isComment, showMoreButton){
 
                 for (let c = comments.Messages.length -1; c >= 0; c--) {
                     // Get nested comments
-                    let commentSubs = await processMessages([comments.Messages[c].msgID], true);
+                    let commentSubs = await processMessages([comments.Messages[c].msgID], true, false);
                 }
 
             }
@@ -3350,6 +3406,9 @@ function formatMsgRespToJSON(_resp){
      *   22 = block (int)
      *   23 = timestamp (int)
      *   24 = postProxy (address)
+     *   25 = tipContract (address)
+     *   26 = tipAmount (int)
+     *   27 = commentID (int)
      */
 
     let respJSONAll = {"Messages": []};
@@ -3382,6 +3441,9 @@ function formatMsgRespToJSON(_resp){
         respJSON.block = parseInt(_resp[i][22]);
         respJSON.timestamp = parseInt(_resp[i][23]);
         respJSON.postProxy = web3.utils.toChecksumAddress(_resp[i][24]);
+        respJSON.tipContract = _resp[i][25];
+        respJSON.tipAmount = _resp[i][26];
+        respJSON.commentID = _resp[i][27];
 
         respJSONAll.Messages.push(respJSON);
     }
@@ -3497,4 +3559,78 @@ async function getProfileData(address){
 
     return userProfile;
 
+}
+
+// 0x2ECF9Ff1B7e1139C4adB521C034CD2874B8bc396
+
+async function validateERC20Contract(tokenContract, amount){
+
+    if (tokenContract === 'MATIC'){
+        if (parseFloat(userMATICBalance / ethDec) >= amount){
+            return 2;
+        } else {
+            return 0;
+        }
+    }
+
+    // Get their Custom Token Balance
+    let abiCustomTokens = [{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"remaining","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}];
+    let contractCustomToken = new web3inf.eth.Contract(abiCustomTokens, tokenContract);
+    console.log("wallet address: ", walletAddress);
+    let tokenBalance = await contractCustomToken.methods.balanceOf(walletAddress).call()
+        .then(result => {
+            console.log('Result:' + result);
+            if (result > 0) {
+                result = parseFloat(result / ethDec);
+            }
+            return result;
+        })
+        .catch(err => {
+            console.log('Error getting balance:', err);
+            return false;
+        });
+
+    if (!tokenBalance) {
+        return -1;
+    }
+
+    console.log('Amount Needed: ', amount);
+    console.log('Custom Token Balance: ', parseFloat(tokenBalance));
+
+    // Check Custom Token Allowance
+    let allowance = await contractCustomToken.methods.allowance(walletAddress, contractAddress).call()
+        .then(result => {
+            console.log('Allowance:' + result);
+            if (result > 0) {
+                result = parseFloat(result / ethDec);
+            }
+            return result;
+        })
+        .catch(err => {
+            console.log('Error getting allowance:', err);
+            return false;
+        });
+
+    if (!allowance) {
+        console.log('Failed to get allowance');
+        return 0;
+    }
+
+    if (allowance >= amount && tokenBalance >= amount) {
+        // They have the balance and allowance
+        console.log('Have Balance + Allowance');
+        return 2;
+    } else if (tokenBalance >= amount) {
+        console.log('Have Balance / No Allowance');
+        // They have the balance, but not the allowance
+        return 1;
+    } else {
+        console.log('No Balance');
+        // They don't have the balance (so the allowance doesn't matter)
+        return 0;
+    }
+}
+
+async function validateERC20(tokenContract, amount){
+    return await validateERC20Contract(tokenContract, amount);
 }

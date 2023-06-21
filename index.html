@@ -411,6 +411,16 @@
         .fade-in-out {
             animation: fade 2s infinite;
         }
+
+        #tokenContract, #tokenTips{
+            background-color: rgb(212 190 252);
+            padding-left:5px;
+            border:1px;
+        }
+
+        .bad {
+            color:darkred;
+        }
     </style>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -599,35 +609,73 @@
                                 <div id="uriWrapper" class="wrapper" style="display:none;text-align:left;position:relative;top:-25px;z-index: 1;background-color:#ad81fc;padding-top:40px;">
                                     <div class="input-box" style="border-bottom:0px;" id="inputWrapperURI" onclick="$('.placeholderURI').hide();$('.inputURI').show();$('.inputURI').focus();">
                                         <span class="placeholderURI" style="color:#000;pointer-events: none;font-weight: 400;">URL: https://www.something.com/awesome/to/share.jpg</span>
-                                        <div class="inputURI" contenteditable="true" spellcheck="false" style="display: none;outline:none;color:#000;" onkeyup="$('#uri').val(this.innerHTML);"></div>
+                                        <div class="inputURI" contenteditable="true" spellcheck="false" style="display: none;outline:none;color:#000;" onkeyup="$('#uri').val(this.innerHTML);" onchange="$('#uri').val(this.innerHTML);"></div>
                                     </div>
                                 </div>
 
                                 <div id="hashtagWrapper" class="wrapper" style="display:none;text-align:left;position:relative;top:-25px;z-index: 1;background-color:#ad81fc;padding-top:40px;">
                                     <div class="input-box" style="border-bottom:0px;" id="inputWrapperHashtag" onclick="$('.placeholderHashtag').hide();$('.inputHashtag').show();$('.inputHashtag').focus();">
                                         <span class="placeholderHashtag" style="color:#000;pointer-events: none;font-weight: 400;">Hashtags: cryptolife, freespeach, nocensorship</span>
-                                        <div class="inputHashtag" contenteditable="true" spellcheck="false" style="display: none;outline:none;color:#000;" onkeyup="$('#hashtags').val(this.innerHTML);"></div>
+                                        <div class="inputHashtag" contenteditable="true" spellcheck="false" style="display: none;outline:none;color:#000;" onkeyup="$('#hashtags').val(this.innerHTML);" onchange="$('#hashtags').val(this.innerHTML);"></div>
                                     </div>
                                 </div>
 
                                 <div id="tagsWrapper" class="wrapper" style="display:none;text-align:left;position:relative;top:-25px;z-index: 1;background-color:#ad81fc;padding-top:40px;">
                                     <div class="input-box" style="border-bottom:0px;" id="inputWrapperTags" onclick="$('.placeholderTags').hide();$('.inputTags').show();$('.inputTags').focus();">
                                         <span class="placeholderTags" style="color:#000;pointer-events: none;font-weight: 400;">Tagged Users: 0x123...,0x456...</span>
-                                        <div class="inputTags" contenteditable="true" spellcheck="false" style="display: none;outline:none;color:#000;" onkeyup="$('#tags').val(this.innerHTML);"></div>
+                                        <div class="inputTags" contenteditable="true" spellcheck="false" style="display: none;outline:none;color:#000;" onkeyup="$('#tags').val(this.innerHTML);" onchange="$('#tags').val(this.innerHTML);"></div>
                                     </div>
                                 </div>
 
                                 <div id="tipsWrapper" class="wrapper" style="display:none;text-align:left;position:relative;top:-25px;z-index: 1;background-color:#ad81fc;padding-top:40px;">
-                                    <div class="input-box" style="border-bottom:0px;" id="inputWrapperTips" onclick="$('.placeholderTips').hide();$('.inputTips').show();$('.inputTips').focus();">
-                                        <span class="placeholderTips" style="color:#000;pointer-events: none;font-weight: 400;">Tips in MATIC to Tagged Users: 1.23</span>
-                                        <div class="inputTips" contenteditable="true" spellcheck="false" style="display: none;outline:none;color:#000;" onkeyup="$('#tips').val(this.innerHTML);"></div>
+
+                                    <div id="tipTokenWrapper">
+                                        <div class="dropdown postMenu">
+                                            <a class="dropdown-toggle" href="#lsRet" role="button" data-toggle="dropdown" aria-expanded="false" style="color:#000;">
+                                                <img src="images/token-MATIC.png" alt="MATIC" style="width:20px;" id="tokenSelIcon" />
+                                            </a>
+                                            <div class="dropdown-menu">
+                                                <a href="#lsRet" onclick="changeTipType('MATIC')" class="dropdown-item">
+                                                    <img src="images/token-MATIC.png" class="menuImage" /> MATIC
+                                                </a>
+                                                <a href="#lsRet" onclick="changeTipType('DOOM')" class="dropdown-item">
+                                                    <img src="images/token-DOOM.png" class="menuImage" /> DOOM
+                                                </a>
+                                                <a href="#lsRet" onclick="changeTipType('GBAR')" class="dropdown-item">
+                                                    <img src="images/token-GBAR.png" class="menuImage" /> GBAR
+                                                </a>
+                                                <a href="#lsRet" onclick="changeTipType('GP')" class="dropdown-item">
+                                                    <img src="images/token-GP.png" class="menuImage" /> GP
+                                                </a>
+                                                <a href="#lsRet" onclick="changeTipType('WETH')" class="dropdown-item">
+                                                    <img src="images/token-WETH.png" class="menuImage" /> WETH
+                                                </a>
+                                                <a href="#lsRet" onclick="changeTipType('OTHER')" class="dropdown-item">
+                                                    <img src="images/token-OTHER.png" class="menuImage" /> OTHER
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
+
+                                    <div class="input-box" style="border-bottom:0px;" id="inputWrapperTips">
+                                        <div class="inputTips" style="display: block;">
+                                            <span style="color:#000;font-weight: bold;">Tip in <img id="tipTokenIcon" src="images/token-MATIC.png" class="menuImage" /> <span id="tipToken">MATIC</span>:</span>
+                                            <input type="text" id="tokenTips" placeholder="1.23" style="width:120px;" onkeyup="$('#checkContractBtn').show();$('#tips').val($(this).val());" onchange="$('#checkContractBtn').show();$('#tips').val($(this).val());" />
+                                            <input id="checkContractBtn" type="button" class="btn btn-sm btn-style-2 gameFont gameButtonSmall" style="margin-left:10px;margin-top:0px;display:none;margin-bottom:0px;"  onclick="updateTokenContract();" value="Verify" />
+                                            <a href="" id="tokenLink" target="_blank" class="errorText"><i class="fas fa-check" style="display:none;position: relative;top:5px;" id="tokenContractIcon"></i></a>
+                                        </div>
+                                    </div>
+                                    <div id="otherContract" style="display: none;color:#000; margin-top:10px;font-weight: bold;">
+                                        Token Contract Address: <input type="text" id="tokenContract" spellcheck="false" placeholder="0x123...aBc" onkeyup="$('#token').val($(this).val());" onchange="$('#token').val($(this).val());" />
+                                    </div>
+
+                                    <div id="tokenContractStatus" style="display: none;margin-top:10px;text-align: center;"></div>
                                 </div>
 
                                 <div id="groupsWrapper" class="wrapper" style="display:none;text-align:left;position:relative;top:-25px;z-index: 1;background-color:#ad81fc;padding-top:40px;">
                                     <div class="input-box" style="border-bottom:0px;" id="inputWrapperGroups" onclick="$('.placeholderGroups').hide();$('.inputGroups').show();$('.inputGroups').focus();">
                                         <span class="placeholderGroups" style="color:#000;pointer-events: none;font-weight: 400;">In Group(s): MintOfDestiny, KryptoSucks, KUTHULU</span>
-                                        <div class="inputGroups" contenteditable="true" spellcheck="false" style="display: none;outline:none;color:#000;" onkeyup="$('#inGroups').val(this.innerHTML);"></div>
+                                        <div class="inputGroups" contenteditable="true" spellcheck="false" style="display: none;outline:none;color:#000;" onkeyup="$('#inGroups').val(this.innerHTML);" onchange="$('#inGroups').val(this.innerHTML);"></div>
                                     </div>
                                 </div>
 
@@ -653,12 +701,17 @@
                         <input type="hidden" id="hashtags" />
                         <input type="hidden" id="tags" />
                         <input type="hidden" id="tips" />
+                        <input type="hidden" id="tipsValid" value="0" />
+                        <input type="hidden" id="token" value="MATIC" />
                         <input type="hidden" id="inGroups" />
                         <input type="hidden" id="commentTo" />
                         <input type="hidden" id="repostOf" />
                         <input type="hidden" id="asGroupID" />
 
                         <div class="row justify-content-center" id="msgs"></div>
+
+                        <a href="./"><button name="allPostsBtn" class="btn btn-light typeButton">RECENT</button></a>
+                        <a href="?onlyFollowing=1"><button name="feedBtn" class="btn btn-light typeButton">FOLLOWING</button></a>
                     </div>
                     <!-- /Entrants -->
 
@@ -822,6 +875,102 @@
         }
         $('#commentWrapper').slideDown();
         $('html, body').animate({ scrollTop: 0 }, 'fast');
+    }
+
+    async function updateTokenContract(){
+
+        let customTokenAmount = parseFloat($('#tips').val());
+
+        $('#tokenContractStatus').html('').hide();
+
+        if (!customTokenAmount || customTokenAmount === 0){
+            $('#tokenContractStatus').html('<span class="gameFont errorText">Invalid Amount to Tip</span>').show();
+            return false;
+        }
+
+        let tokenContract = $('#token').val();
+
+        $('#tokenLink').show();
+
+        // Validate the address
+        if (!validateTag(tokenContract) && tokenContract !== 'MATIC'){
+            $('#tokenLink').attr('href','#lsRet');
+            $('#tokenContractIcon').show();
+            $('#tokenContractIcon').removeClass('fa-check');
+            $('#tokenContractIcon').addClass('fa-times bad');
+
+            $('#tokenContractStatus').html('<span class="gameFont errorText">Invalid Contract Address</span>').show();
+            return false;
+        } else {
+            let validTokenContract = 0;
+            validTokenContract = await validateERC20(tokenContract, customTokenAmount);
+
+            console.log("DONE: ", validTokenContract);
+
+            if (validTokenContract === 2) {
+                $('#tokenContractIcon').show();
+                $('#tokenLink').attr('href', 'https://polygonscan.com/address/' + tokenContract);
+                $('#tokenContractIcon').addClass('fa-check');
+                $('#tokenContractIcon').removeClass('fa-times bad');
+                $('#tipsValid').val(1);
+            } else if (validTokenContract == 1){
+                $('#tokenContractIcon').show();
+                $('#tokenLink').attr('href', 'https://polygonscan.com/address/' + tokenContract);
+                $('#tokenContractIcon').addClass('fa-check');
+                $('#tokenContractIcon').removeClass('fa-times bad');
+
+                $('#tokenContractStatus').html('<span class="gameFont errorText">You need to allow tipping</span>').show();
+                $('#tipsValid').val(0);
+            } else if (validTokenContract == -1){
+                $('#tokenLink').attr('href','#lsRet');
+                $('#tokenContractIcon').show();
+                $('#tokenContractIcon').removeClass('fa-check');
+                $('#tokenContractIcon').addClass('fa-times bad');
+
+                $('#tokenContractStatus').html('<span class="gameFont errorText">Invalid Contract Address</span>').show();
+                $('#tipsValid').val(0);
+            } else {
+                $('#tokenContractIcon').show();
+                $('#tokenLink').attr('href','#lsRet');
+                $('#tokenContractIcon').removeClass('fa-check');
+                $('#tokenContractIcon').addClass('fa-times bad');
+
+                $('#tokenContractStatus').html('<span class="gameFont errorText">You don\'t have that much</span>').show();
+                $('#tipsValid').val(0);
+            }
+        }
+    }
+
+    function changeTipType(token){
+        $('#tipToken').html(token);
+        $('#tipTokenIcon').attr('src','images/token-' + token + '.png');
+        $('#tokenSelIcon').attr('src','images/token-' + token + '.png');
+        $('#tipsValid').val(0);
+        $('#tokenLink').hide();
+
+        switch (token) {
+            case "MATIC":
+                $('#token').val('MATIC');
+                break;
+            case "DOOM":
+                $('#token').val('0x2ECF9Ff1B7e1139C4adB521C034CD2874B8bc396');
+                break;
+            case "GBAR":
+                $('#token').val('0xb45F6e99Bc6E4A8Bc431BA86B2E0376271c8545F');
+                break;
+            case "GP":
+                $('#token').val('0xFD7c36C3640DC0eb778ceB463ce618f37FEc5103');
+                break;
+            case "WETH":
+                $('#token').val('0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619');
+                break;
+        }
+
+        if (token === 'OTHER'){
+            $('#otherContract').show();
+        } else {
+            $('#otherContract').hide();
+        }
     }
 
     function showComments(msgID){
