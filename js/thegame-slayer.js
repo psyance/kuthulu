@@ -2024,7 +2024,7 @@ async function processMessages(msgIDs, isComment, showMoreButton, getOnlyFollowi
                 let comments = await contractKUTHULU.methods.getMsgsByIDs(commentIDs, false, walletAddress).call()
                     .then(result => {
                         result = formatMsgRespToJSON(result);
-                        // console.log('Comment Data:' + result);
+                        console.log('Comment Data:' + result);
                         return result;
                     })
                     .catch(err => {
@@ -2033,7 +2033,9 @@ async function processMessages(msgIDs, isComment, showMoreButton, getOnlyFollowi
 
                 for (let c = comments.Messages.length -1; c >= 0; c--) {
                     // Get nested comments
-                    let commentSubs = await processMessages([comments.Messages[c].msgID], true, false);
+                    if (!isNaN(comments.Messages[c].msgID)) {
+                        let commentSubs = await processMessages([comments.Messages[c].msgID], true, false);
+                    }
                 }
 
             }
