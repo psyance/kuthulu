@@ -92,6 +92,7 @@ let contractKUTHULUTokensPub = new web3.eth.Contract(abiTokens, contractAddressD
 let contractGroupTokens = new web3inf.eth.Contract(abiGroupTokens, contractAddressGroupsTokens);
 let contractGroupTokensPub = new web3.eth.Contract(abiGroupTokens, contractAddressGroupsTokens);
 let contractGroups = new web3inf.eth.Contract(abiGroups, contractAddressGroups);
+let contractGroupsPub = new web3.eth.Contract(abiGroups, contractAddressGroups);
 let contractProfiles = new web3inf.eth.Contract(abiProfiles, contractAddressProfiles);
 let contractProfilesPub = new web3.eth.Contract(abiProfiles, contractAddressProfiles);
 let contractLikes = new web3inf.eth.Contract(abiLikes, contractAddressLikes);
@@ -271,7 +272,7 @@ async function checkWallet(attempt) {
 
         if (network === validNetworkID) {
 
-            walletAddress = await window.ethereum.selectedAddress;
+            walletAddress = await web3.utils.toChecksumAddress(window.ethereum.selectedAddress);
 
             console.log('wallet address: ', walletAddress);
 
@@ -281,7 +282,7 @@ async function checkWallet(attempt) {
                     const accounts = await ethereum.request({method: 'eth_requestAccounts'});
                     console.log('Accounts: ', accounts);
                     if (accounts.length >= 0) {
-                        walletAddress = accounts[0];
+                        walletAddress = web3.utils.toChecksumAddress(accounts[0]);
                         console.log('Retrieved wallet address');
                     }
                 } catch (e){
@@ -362,7 +363,7 @@ async function checkWallet(attempt) {
             }
 
         } else {
-            walletAddress = await window.ethereum.selectedAddress;
+            walletAddress = await web3.utils.toChecksumAddress(window.ethereum.selectedAddress);
 
             if (walletAddress !== null && walletAddress !== undefined && attempt !== 2) {
                 const accounts = await ethereum.request({method: 'eth_requestAccounts'});
@@ -418,7 +419,7 @@ function showConnectWalletButtons(onOff){
 
         if (tipsToClaim > 0) {
             let mmButtons = '<div id="claimTipsWrapper"><span class="walletCon gameFont">Tips to Claim : <span style="color:#ad81fc;" id="tipsToClaim">' + web3.utils.fromWei(tipsToClaim) + '</span></span><br>';
-            mmButtons += '<input type="button" class="btn btn-sm btn-style-2 gameFont gameButtonSmall" style="margin-top:15px;" onClick="claimTips(0)" value="Claim Tips!"/></div>';
+            mmButtons += '<input type="button" class="btn btn-sm btn-style-2 gameFont gameButtonSmall" style="margin-top:15px;" onClick="claimTips(0)" value="Claim MATIC Tips!"/></div>';
 
             $('#mmConn').html(mmButtons);
         }
@@ -532,7 +533,7 @@ async function postMsg() {
         }
 
         for (let t=0;t<tags.length;t++){
-            if (!validateTag(tags[t])){
+            if (!validateWalletAddress(tags[t])){
                 alert(tags[t] + ' is not a valid Ethereum address');
                 endLoading();
                 return;
@@ -599,7 +600,7 @@ async function postMsg() {
             // Set MATIC tips to 0
             tips = 0;
 
-            if (!validateTag(tokenContract)){
+            if (!validateWalletAddress(tokenContract)){
                 alert(tokenContract + ' is not a valid ERC-20 Contract address');
                 endLoading();
                 return;
@@ -728,7 +729,7 @@ async function postMsg() {
 }
 
 
-function validateTag(tag){
+function validateWalletAddress(tag){
     return web3.utils.isAddress(tag);
 }
 
@@ -1250,8 +1251,8 @@ async function toggleBlock(address, groupID){
         // Check if they're using a whitelist
         let usingWhitelist = await contractBlocking.methods.usrBlockingMap(walletAddress).call()
             .then(result => {
-                console.log('Using Whitelist:' + result);
-                return result;
+                console.log('Using Whitelist:' + result.usingWhitelist);
+                return result.usingWhitelist;
             })
             .catch(err => {
                 catchError('usrBlockingMap-whitelistcheck', err);
@@ -1300,6 +1301,7 @@ async function toggleBlock(address, groupID){
         if (usingWhitelist){
             let resp = await contractBlockingPub.methods.updateWhitelist(address, groupID).send(transaction)
                 .then(result => {
+                    console.log("Whitelist Updated");
                     endLoading();
                     // window.location.reload();
                 })
@@ -1310,6 +1312,7 @@ async function toggleBlock(address, groupID){
         } else {
             let resp = await contractBlockingPub.methods.updateBlacklist(address, groupID).send(transaction)
                 .then(result => {
+                    console.log("Blacklist Updated");
                     endLoading();
                     // window.location.reload();
                 })
@@ -1767,12 +1770,92 @@ async function getPosts() {
         msgIDs = await contractGroupPosts.methods.getMsgIDsByGroupID(qsGroupID, 0).call()
             .then(result => {
                 console.log('Group Message IDs:', result);
-                $('#postBox').hide();
                 return result;
             })
             .catch(err => {
                 catchError('getMsgIDs-groups', err);
             });
+
+        // Get the Group Address
+        let groupAddress = await contractGroups.methods.getGroupAddressFromID(qsGroupID).call()
+            .then(result => {
+                console.log('Group Address:', result);
+                return result;
+            })
+            .catch(err => {
+                catchError('getMsgIDs-groups', err);
+            });
+
+        // Now get the profile data
+        let groupProfileData = await contractProfiles.methods.getUserDetails(groupAddress).call()
+            .then(result => {
+                console.log('Group Profile Data:', result);
+                return formatUserProfileToJSON(result);
+            })
+            .catch(err => {
+                catchError('getMsgIDs-groups', err);
+            });
+
+        let groupColors = await contractGroups.methods.getGroupColorsFromID(qsGroupID).call()
+            .then(result => {
+                console.log('Group Colors:', result);
+                return result;
+            })
+            .catch(err => {
+                catchError('getMsgIDs-groups', err);
+            });
+
+        let groupDetails = await contractGroups.methods.getGroupDetailsFromID(qsGroupID).call()
+            .then(result => {
+                console.log('Group Details:', result);
+                return result;
+            })
+            .catch(err => {
+                catchError('getMsgIDs-groups', err);
+            });
+
+        let groupURI = await contractGroups.methods.getGroupURIFromID(qsGroupID).call()
+            .then(result => {
+                console.log('Group URI:', result);
+                return result;
+            })
+            .catch(err => {
+                catchError('getMsgIDs-groups', err);
+            });
+
+
+        // Hide the regular KUTHULU header stuff
+        $('#mintGroupLink').hide();
+        $('#feedType').hide();
+
+        // Update the postbox to auto-post into this group
+        $('#postBoxGroups').html(groupProfileData.handle);
+        $('#inGroups').html(groupProfileData.handle);
+        $('.placeholderGroups').hide();$('.inputGroups').show();
+        $('#groupsWrapper').slideToggle();
+
+        let header = '<a href="index.html">';
+            header += '<span style="font-size: 100px; text-shadow: none; background-image: linear-gradient(0deg, #' + groupColors[0] + ', #' + groupColors[1] + ', #' + groupColors[2] + '); -webkit-text-stroke-width: 1px; -webkit-text-stroke-color: black; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">';
+            header += groupProfileData.handle;
+            header += '</span>';
+            header += '</a>';
+
+        $('#mainHeadingText').html(header);
+
+        if (groupDetails) {
+            $('#groupDetails').html(groupDetails).show();
+        }
+
+        if (groupURI) {
+            $('#groupURI').html('<a href="' + groupURI + '" target="_blank">' + groupURI + '</a>').show();
+        }
+
+        let nftProfile = await getProfileImageFromNFT(groupProfileData.avatarMetadata, groupProfileData.avatarContract, groupAddress, groupProfileData.qsGroupID);
+
+        // Set custom background colors
+        $('#home').css('background-image', 'linear-gradient(0deg, #' + groupColors[0] + ', #' + groupColors[1] + ', #' + groupColors[2] + ')');
+
+
     } else if (qsCommentsOf && qsCommentsOf !== '') {
         msgIDs = await contractKUTHULU.methods.getSubIDsByPost(qsCommentsOf, 0, 0).call()
             .then(result => {
@@ -1804,7 +1887,7 @@ async function getPosts() {
                 catchError('getSubIDsByPost-reposts', err);
             });
     } else if (qsMsgID && qsMsgID !== '') {
-        let posts = await contractKUTHULU.methods.getMsgsByIDs([qsMsgID], false, '0x0000000000000000000000000000000000000000').call()
+        let posts = await contractKUTHULU.methods.getMsgsByIDs([qsMsgID], false, walletAddress).call()
             .then(result => {
                 result = formatMsgRespToJSON(result).Messages;
                 $('#postBox').hide();
@@ -1894,17 +1977,7 @@ async function processMessages(msgIDs, isComment, showMoreButton, getOnlyFollowi
 
     console.log("IDs to get: ", msgIDs);
 
-    let getForAddress = '0x0000000000000000000000000000000000000000';
-    if (getOnlyFollowing){
-        getForAddress = walletAddress;
-    }
-
-    console.log("*");
-    console.log(getOnlyFollowing);
-    console.log(getForAddress);
-    console.log("*");
-
-    let posts = await contractKUTHULU.methods.getMsgsByIDs(msgIDs, getOnlyFollowing, getForAddress).call()
+    let posts = await contractKUTHULU.methods.getMsgsByIDs(msgIDs, getOnlyFollowing, walletAddress).call()
         .then(result => {
             result = formatMsgRespToJSON(result);
             console.log('Message Data:', result);
@@ -1948,7 +2021,7 @@ async function processMessages(msgIDs, isComment, showMoreButton, getOnlyFollowi
             // Format the posts
             if (commentIDs.length > 0) {
 
-                let comments = await contractKUTHULU.methods.getMsgsByIDs(commentIDs, false, '0x0000000000000000000000000000000000000000').call()
+                let comments = await contractKUTHULU.methods.getMsgsByIDs(commentIDs, false, walletAddress).call()
                     .then(result => {
                         result = formatMsgRespToJSON(result);
                         // console.log('Comment Data:' + result);
@@ -2069,7 +2142,8 @@ async function makeProfile(userAddress){
 
             if (isGroupOwner){
                 post += '<a href="#" onclick="$(\'#editProfileWrapper\').toggle();" class="dropdown-item"><img src="images/profile.png" class="menuImage" /> Edit Profile</a>';
-                post += '<a href="#" onclick="$(\'#editAvatarNFT\').toggle();" class="dropdown-item"><img src="images/nftavatar.png" class="menuImage" /> Set Pic As NFT</a>';
+                post += '<a href="#" onclick="$(\'#editAvatarNFT\').toggle();" class="dropdown-item"><img src="images/nftavatar.png" class="menuImage" /> Set NFT As Pic</a>';
+                post += '<a href="#" onclick="$(\'#groupModMembers\').toggle();" class="dropdown-item"><img src="images/profile.png" class="menuImage" /> Modify Members</a>';
 
                 post += '<div class="dropdown-divider"></div>';
             }
@@ -2096,8 +2170,10 @@ async function makeProfile(userAddress){
             }
 
             // Check if they are blocking this user (requester / target)
+            // It's reversed because we want to check if the user being viewed is blocked from the viewer
             let isAllowed = await contractBlocking.methods.isAllowed(userAddress, walletAddress).call()
                 .then(result => {
+                    console.log(result);
                     return result;
                 })
                 .catch(err => {
@@ -2121,7 +2197,7 @@ async function makeProfile(userAddress){
                 });
 
             post += '<a href="#" onclick="$(\'#editProfileWrapper\').toggle();" class="dropdown-item"><img src="images/profile.png" class="menuImage" /> Edit Profile</a>';
-            post += '<a href="#" onclick="$(\'#editAvatarNFT\').toggle();" class="dropdown-item"><img src="images/nftavatar.png" class="menuImage" /> Set Pic As NFT</a>';
+            post += '<a href="#" onclick="$(\'#editAvatarNFT\').toggle();" class="dropdown-item"><img src="images/nftavatar.png" class="menuImage" /> Set NFT As Pic</a>';
             if (usingWhitelist){
                 post += '<a href="#" onclick="toggleWhitelist(' + userProfile.groupID + ');" class="dropdown-item"><img src="images/blacklist.png" class="menuImage" /> Use Blacklist</a>';
             } else {
@@ -2148,7 +2224,7 @@ async function makeProfile(userAddress){
     }
 
     if (userProfile.groupID > 0){
-        post += '%' + userProfile.handle.toUpperCase();
+        post += '%' + userProfile.handle;
     } else if (userProfile.handle.length > 0) {
         post += userProfile.handle;
     } else {
@@ -2290,7 +2366,13 @@ async function makeProfile(userAddress){
         post += '<input type="hidden" id="groupID" name="groupID" value="' + userProfile.groupID + '" />';
         post += '<div class="eP">NFT Avatar Contract: <input type="text" name="tokenContract" id="tokenContract" /></div>';
         post += '<div class="eP">NFT Avatar Token ID: <input type="text" name="tokenID" id="tokenID" /></div>';
-        post += '<input id="editNFTAvatar" type="button" class="walletButtonBig gameFont gameButtonBig" onclick="setNFTAvatar(' + userProfile.groupID + ')" value="Set NFT As Avatar" />';
+        post += '<input type="button" class="walletButtonBig gameFont gameButtonBig" onclick="setNFTAvatar(' + userProfile.groupID + ')" value="Set NFT As Avatar" />';
+        post += '</div>';
+
+        post += '<div id="groupModMembers" style="display:none;margin-top:20px;">';
+        post += '<div class="eP">Wallet Address: <input type="text" name="groupModAddress" id="groupModAddress" /></div>';
+        post += '<input type="button" class="walletButtonBig gameFont gameButtonBig" onclick="groupMembership(\'' + userProfile.groupID + '\', \'add\')" value="Add To Group" />';
+        post += '<input type="button" class="walletButtonBig gameFont gameButtonBig" onclick="groupMembership(\'' + userProfile.groupID + '\', \'remove\')" value="Remove From Group" />';
         post += '</div>';
 
         post += '<div id="editName" style="display:none;margin-top:20px;">';
@@ -2305,7 +2387,116 @@ async function makeProfile(userAddress){
         post += '</div>';
     }
 
+    if (userProfile.groupID > 0){
+        post += '<a href="index.html?group=' + userProfile.handle + '"><input id="gotoSpace" type="button" class="walletButtonBig gameFont gameButtonBig" value="Go To %' + userProfile.handle + ' Space" /></a>';
+    }
+
     return post;
+}
+
+async function groupMembership(groupID, method){
+
+    if (groupID) {
+        let _wallet = $('#groupModAddress').val();
+        if (validateWalletAddress(_wallet)) {
+
+            startLoading('Updating Group Members...')
+
+            // Get current gas prices
+            const currentGasPrices = await getCurrentGasPrices();
+
+            const ethereum = window.ethereum;
+            const ethAccounts = await ethereum.request({
+                method: "eth_requestAccounts",
+            });
+            const provider = new ethers.providers.Web3Provider(ethereum)
+            const ethWalletAddress = ethAccounts[0]
+            const signer = provider.getSigner(ethWalletAddress)
+            const contractHandlesEther = new ethers.Contract(contractAddressGroups, abiGroups, signer)
+
+            if (method === 'add') {
+                const estimatedGasLimit = await contractHandlesEther.estimateGas.addMemberToGroup(groupID, _wallet)
+                    .then(async (result) => {
+                        console.log('Gas Estimate: ', result.toString());
+                        return result;
+                    })
+                    .catch(async (err) => {
+                        console.log(err);
+                        let errResp = await catchError('estimateGas', err);
+                    });
+
+                // Build data manually
+                const abi = ethers.utils.defaultAbiCoder;
+                let params = abi.encode(
+                    ["uint256"],
+                    [ groupID ],
+                    ["address"],
+                    [ _wallet ]
+                ); // array to encode
+
+                const transaction = {
+                    "from": walletAddress,
+                    "data": params,
+                    "gas": estimatedGasLimit,
+                    "gasLimit": estimatedGasLimit,
+                    "gasPrice": web3.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
+                    "chainId": chainIDRaw
+                };
+
+                let resp = await contractGroupsPub.methods.addMemberToGroup(groupID, _wallet).send(transaction)
+                    .then(async (result) => {
+                        console.log('Update Results: ', result);
+
+                        endLoading();
+
+                        return result;
+                    })
+                    .catch(async (err) => {
+                        let errResp = await catchError('addMemberToGroup', err);
+                    });
+            } else if (method === 'remove'){
+                const estimatedGasLimit = await contractHandlesEther.estimateGas.removeMemberFromGroup(groupID, _wallet)
+                    .then(async (result) => {
+                        console.log('Gas Estimate: ', result.toString());
+                        return result;
+                    })
+                    .catch(async (err) => {
+                        let errResp = await catchError('estimateGas', err);
+                    });
+
+                // Build data manually
+                const abi = ethers.utils.defaultAbiCoder;
+                let params = abi.encode(
+                    ["uint256"],
+                    [ groupID ],
+                    ["address"],
+                    [ _wallet ]
+                ); // array to encode
+
+                const transaction = {
+                    "from": walletAddress,
+                    "data": params,
+                    "gas": estimatedGasLimit,
+                    "gasLimit": estimatedGasLimit,
+                    "gasPrice": web3.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
+                    "chainId": chainIDRaw
+                };
+
+                let resp = await contractGroupsPub.methods.removeMemberFromGroup(groupID, _wallet).send(transaction)
+                    .then(async (result) => {
+                        console.log('Update Results: ', result);
+
+                        endLoading();
+
+                        return result;
+                    })
+                    .catch(async (err) => {
+                        let errResp = await catchError('removeMemberFromGroup', err);
+                    });
+            }
+        }
+    }
+    
 }
 
 
@@ -2893,7 +3084,7 @@ async function makePost(p, skipRepost, isComment){
     let shortAddr = makeShortAddress(p.postedBy);
     if (p.handle.length > 0){
         if (isGroup){
-            post += '%' + p.handle.toUpperCase();
+            post += '%' + p.handle;
         } else {
             post += '@' + p.handle;
         }
@@ -2907,16 +3098,18 @@ async function makePost(p, skipRepost, isComment){
         post += '<img src="images/verified1.png" style="height:20px;position: relative;top:-2px;margin-left:2px;" />';
     }
 
+    let groupAddresses = [];
+
     if (p.inGroups.length > 0) {
         let inGroups = p.inGroups.split(',');
         post += ' <span class="muted">'
         for (let g = 0; g < inGroups.length; g++) {
 
             // Get the group name
-            let groupName = await contractGroups.methods.groupDetails(inGroups[g]).call()
+            let groupDetails = await contractGroups.methods.groupDetails(inGroups[g]).call()
                 .then(result => {
                     if (result.groupAddress !== '0x0000000000000000000000000000000000000000'){
-                        return result.groupName;
+                        return result;
                     } else {
                         return '';
                     }
@@ -2925,7 +3118,10 @@ async function makePost(p, skipRepost, isComment){
                     catchError('groupDetails', err);
                 });
 
-            if (groupName !== '') {
+            // Populate the address
+            groupAddresses.push(groupDetails.groupAddress);
+
+            if (groupDetails.groupName) {
                 if (g === 0) {
                     post += ' => ';
                 }
@@ -2933,7 +3129,7 @@ async function makePost(p, skipRepost, isComment){
                     post += ', ';
                 }
 
-                post += '<a href="?groupID=' + inGroups[g] + '" class="groupName">%' + groupName.toUpperCase() + "</a>";
+                post += '<a href="?groupID=' + inGroups[g] + '" class="groupName">%' + groupDetails.groupName.toUpperCase() + "</a>";
             }
         }
         post += '</span>';
@@ -2950,7 +3146,7 @@ async function makePost(p, skipRepost, isComment){
             if (groups) {
                 if (g + 1 <= groups.length) {
                     let re = new RegExp(groups[g],"gi");
-                    p.message = p.message.replace(re, '<a href="?groupID=' + inGroups[g] + '">' + groups[g] + '</a>');
+                    p.message = p.message.replace(re, '<a href="?address=' + groupAddresses[g] + '">' + groups[g] + '</a>');
                 }
             }
         }
@@ -3010,11 +3206,32 @@ async function makePost(p, skipRepost, isComment){
 
         // Show the tagged Users
         let tagged = p.taggedAccounts.split(',');
-        for (let t = 0; t < tagged.length; t++) {
+
+        let amountOfTaggedUsers = tagged.length;
+
+        // See if they tipped with ERC-20
+        if (parseFloat(p.tipAmount) > 0){
+            // If so, the last user "tagged" is actually the contract of the ERC-20 token, so stop short by 1
+            amountOfTaggedUsers--;
+        }
+
+        for (let t = 0; t < amountOfTaggedUsers; t++) {
             // Make the HTML for the post
             taggedUsers += '<div style="float:right;position:relative;margin-right:10px;">';
-            if (p.tips > 0) {
-                taggedUsers += '<img src="images/coin.png" style="position:absolute;right:-5px;top:0px;" />';
+            if (parseFloat(p.tips) > 0) {
+                taggedUsers += '<img src="images/token-MATIC.png" style="position:absolute;right:-5px;top:0px;width:16px;height:16px;" />';
+            } else if (parseFloat(p.tipAmount) > 0){
+                if (p.tipContract === '0x2ecf9ff1b7e1139c4adb521c034cd2874b8bc396'){
+                    taggedUsers += '<img src="images/token-DOOM.png" style="position:absolute;right:-5px;top:0px;width:16px;height:16px;" />';
+                } else if (p.tipContract === '0xb45f6e99bc6e4a8bc431ba86b2e0376271c8545f'){
+                    taggedUsers += '<img src="images/token-GBAR.png" style="position:absolute;right:-5px;top:0px;width:16px;height:16px;" />';
+                } else if (p.tipContract === '0xfd7c36c3640dc0eb778ceb463ce618f37fec5103'){
+                    taggedUsers += '<img src="images/token-GP.png" style="position:absolute;right:-5px;top:0px;width:16px;height:16px;" />';
+                } else if (p.tipContract === '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619'){
+                    taggedUsers += '<img src="images/token-WETH.png" style="position:absolute;right:-5px;top:0px;width:16px;height:16px;" />';
+                } else {
+                    taggedUsers += '<img src="images/coin.png" style="position:absolute;right:-5px;top:0px;width:16px;height:16px;" />';
+                }
             }
             taggedUsers += '<a href="?address=' + tagged[t] + '&tagged=1"><img src="images/taggedUser.png" style="width:30px;"  alt="' + tagged[t] + '"></a></div>';
         }
@@ -3064,7 +3281,7 @@ async function makePost(p, skipRepost, isComment){
 
     // Get Message if repost
     if (p.isRepostOf > 0 && !skipRepost){
-        let repost = await contractKUTHULU.methods.getMsgsByIDs([p.isRepostOf], false, '0x0000000000000000000000000000000000000000').call()
+        let repost = await contractKUTHULU.methods.getMsgsByIDs([p.isRepostOf], false, walletAddress).call()
             .then(result => {
                 result = formatMsgRespToJSON(result);
                 // console.log('Repost Of:' + result);
@@ -3129,13 +3346,36 @@ async function makePost(p, skipRepost, isComment){
         post += '<a href="#lsRet" onclick="toggleComment(' + p.msgID + ', true)"><img src="images/repost.png" class="actionIcon" /></a>';
         post += '<span class="actionVal"><a href="?repostsOf=' + p.msgID + '">' + p.reposts + '</a></span>';
 
+
         // Show Tips
-        post += '<a href="#lsRet" onclick="tip(' + p.msgID + ');"><img src="images/tips.png" class="actionIcon" /></a>';
         let tipsReceived = 0;
         if (p.tips > 0){
             tipsReceived = p.tips / ethDec;
             tipsReceived = Math.round((tipsReceived + Number.EPSILON) * 100) / 100
+        } else if (parseFloat(p.tipAmount) > 0) {
+            tipsReceived = p.tipAmount / ethDec;
+            tipsReceived = Math.round((tipsReceived + Number.EPSILON) * 100) / 100
         }
+
+        post += '<a href="#lsRet" onclick="tip(' + p.msgID + ');">';
+
+        if (parseFloat(p.tipAmount) > 0){
+            if (p.tipContract === '0x2ecf9ff1b7e1139c4adb521c034cd2874b8bc396'){
+                post += '<img src="images/token-DOOM.png" class="actionIcon" style="width:18px;height:18px;" />';
+            } else if (p.tipContract === '0xb45f6e99bc6e4a8bc431ba86b2e0376271c8545f'){
+                post += '<img src="images/token-GBAR.png" class="actionIcon" style="width:18px;height:18px;" />';
+            } else if (p.tipContract === '0xfd7c36c3640dc0eb778ceb463ce618f37fec5103'){
+                post += '<img src="images/token-GP.png" class="actionIcon" style="width:18px;height:18px;" />';
+            } else if (p.tipContract === '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619'){
+                post += '<img src="images/token-WETH.png" class="actionIcon" style="width:18px;height:18px;" />';
+            } else {
+                post += '<img src="images/coin.png" class="actionIcon" style="width:18px;height:18px;" />';
+            }
+        } else {
+            post += '<img src="images/tips.png" class="actionIcon" />';
+        }
+        post += '</a>';
+
         post += '<span class="actionVal"><a href="?tips=' + p.msgID + '">' + tipsReceived + '</a></span>';
 
         // Show Share Button
