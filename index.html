@@ -183,7 +183,7 @@
             text-align: left;
             background-color: rgba(0, 0, 0, 0.4);
             margin-top:8px;
-            overflow:auto;
+            /*overflow:auto;*/
         }
 
         .messageRepostWrapper{
@@ -422,8 +422,20 @@
             color:darkred;
         }
 
+        .good {
+            color:#58ea5a;
+        }
+
         #mainHeadingText{
             margin-bottom:20px;
+        }
+
+        #claimGroupTipsWrapper{
+            position: relative;
+            float:right;
+            right:0px;
+            top:28px;
+            font-size: 12px;
         }
     </style>
 
@@ -901,7 +913,7 @@
         $('#tokenLink').show();
 
         // Validate the address
-        if (!validateTag(tokenContract) && tokenContract !== 'MATIC'){
+        if (!validateWalletAddress(tokenContract) && tokenContract !== 'MATIC'){
             $('#tokenLink').attr('href','#lsRet');
             $('#tokenContractIcon').show();
             $('#tokenContractIcon').removeClass('fa-check');
