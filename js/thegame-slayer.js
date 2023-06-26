@@ -1786,6 +1786,16 @@ async function getPosts() {
                 catchError('getMsgIDs-groups', err);
             });
 
+        // Get the Group Address
+        let groupName = await contractGroups.methods.getGroupNameFromID(qsGroupID).call()
+            .then(result => {
+                console.log('Group Name:', result);
+                return result;
+            })
+            .catch(err => {
+                catchError('getMsgIDs-groups', err);
+            });
+
         // Now get the profile data
         let groupProfileData = await contractProfiles.methods.getUserDetails(groupAddress).call()
             .then(result => {
@@ -1829,14 +1839,14 @@ async function getPosts() {
         $('#feedType').hide();
 
         // Update the postbox to auto-post into this group
-        $('#postBoxGroups').html(groupProfileData.handle);
-        $('#inGroups').html(groupProfileData.handle);
+        $('#postBoxGroups').html(groupName);
+        $('#inGroups').html(groupName);
         $('.placeholderGroups').hide();$('.inputGroups').show();
         $('#groupsWrapper').slideToggle();
 
         let header = '<a href="index.html">';
             header += '<span style="font-size: 100px; text-shadow: none; background-image: linear-gradient(0deg, #' + groupColors[0] + ', #' + groupColors[1] + ', #' + groupColors[2] + '); -webkit-text-stroke-width: 1px; -webkit-text-stroke-color: black; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">';
-            header += groupProfileData.handle;
+            header += groupName;
             header += '</span>';
             header += '</a>';
 
@@ -2158,6 +2168,18 @@ async function makeProfile(userAddress){
 
     let isAllowed = true;
 
+    // Check if group multi-sig locked
+    // 0 = Is Locked (True / False)
+    // 1 = Has Address set for locking (True / False)
+    let isMultiSigLocked = await contractGroupTokens.methods.isMultiSigLocked(userProfile.groupID).call()
+        .then(result => {
+            console.log("Is Mult-Sig Locked: ", result);
+            return result;
+        })
+        .catch(err => {
+            catchError('isAllowed', err);
+        });
+
     if (validWalletConnection) {
         if (walletAddress.toLowerCase() !== userAddress.toLowerCase()) {
 
@@ -2171,24 +2193,11 @@ async function makeProfile(userAddress){
                     catchError('checkTips', err);
                 });
 
-
-            // Check if group multi-sig locked
-            // 0 = Is Locked (True / False)
-            // 1 = Has Address set for locking (True / False)
-            let isMultiSigLocked = await contractGroupTokens.methods.isMultiSigLocked(userProfile.groupID).call()
-                .then(result => {
-                    console.log("Is Mult-Sig Locked: ", result);
-                    return result;
-                })
-                .catch(err => {
-                    catchError('isAllowed', err);
-                });
-
             if (isGroupOwner){
                 post += '<a href="#" onclick="resetEdits();$(\'#editProfileWrapper\').show();" class="dropdown-item"><img src="images/profile.png" class="menuImage" /> Edit Profile</a>';
                 post += '<a href="#" onclick="resetEdits();$(\'#editAvatarNFT\').show();" class="dropdown-item"><img src="images/nftavatar.png" class="menuImage" /> Set NFT As Pic</a>';
-                post += '<a href="#" onclick="resetEdits();$(\'#groupAddMembers\').show();" class="dropdown-item"><img src="images/profile.png" class="menuImage" /> Add Member</a>';
-                post += '<a href="#" onclick="resetEdits();$(\'#groupRemoveMembers\').show();" class="dropdown-item"><img src="images/profile.png" class="menuImage" /> Remove Member</a>';
+                post += '<a href="#" onclick="resetEdits();$(\'#groupAddMembers\').show();" class="dropdown-item"><img src="images/addMember.png" class="menuImage" /> Add Member</a>';
+                post += '<a href="#" onclick="resetEdits();$(\'#groupRemoveMembers\').show();" class="dropdown-item"><img src="images/removeMember.png" class="menuImage" /> Remove Member</a>';
                 if (!isMultiSigLocked[0]) {
                     post += '<a href="#" onclick="resetEdits();$(\'#lockGroup\').show();" class="dropdown-item"><img src="images/nftLocked.png" class="menuImage" /> Lock w/ MultiSig</a>';
                 } else {
@@ -2236,11 +2245,6 @@ async function makeProfile(userAddress){
                 post += '<a href="#lsRet" onclick="toggleBlock(\'' + userAddress + '\', ' + userProfile.groupID + ')" class="dropdown-item"><img src="images/unblock.png" class="menuImage" /> Unblock User</a>';
             }
 
-            console.log("$$$");
-            console.log("Wallet: ", walletAddress.toLowerCase());
-            console.log("MultiSig: ", multiSigAddress.toLowerCase());
-            console.log("$$$");
-
             if (walletAddress.toLowerCase() === multiSigAddress.toLowerCase()) {
                 if (!isMultiSigLocked[0]) {
                     post += '<a href="#" onclick="resetEdits();lockGroup(\'' + userProfile.groupID + '\', \'Activate\');" class="dropdown-item"><img src="images/nftLockActivate.png" class="menuImage" /> Activate Multi-Sig</a>';
@@ -2274,8 +2278,13 @@ async function makeProfile(userAddress){
     post += '</div>';
 
     // Avatar
+    post += '<div class="profileAvatarWrapper" style="position: relative;width:40px;">'
+    if (isMultiSigLocked[0]){
+        post += '<img src="images/nftLockActivate.png" alt="NFT Multi-Sig Locked" style="position: absolute;right:-6px;top:32px;z-index: 2000;height:20px;" />';
+    }
     post += '<div class="profileAvatar ' + userAddress.toLowerCase() + '">';
     post += '<img src="' + userProfile.profileImage + '" class="profileAvatarImg" onerror="this.onerror=null;this.src=\'images/user.png\'" alt="' + userAddress + '" />';
+    post += '</div>';
     post += '</div>';
 
     // Username
@@ -3347,6 +3356,8 @@ async function makePost(p, skipRepost, isComment){
                     catchError('groupDetails', err);
                 });
 
+            console.log("🔥 Group Details: ", groupDetails);
+
             // Populate the address
             groupAddresses.push(groupDetails.groupAddress);
 
@@ -3375,6 +3386,7 @@ async function makePost(p, skipRepost, isComment){
             if (groups) {
                 if (g + 1 <= groups.length) {
                     let re = new RegExp(groups[g],"gi");
+                    console.log("🔥 GROUP ADDERSSSSSS: ",  groupAddresses[g])
                     p.message = p.message.replace(re, '<a href="?address=' + groupAddresses[g] + '">' + groups[g] + '</a>');
                 }
             }
