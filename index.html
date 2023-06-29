@@ -259,6 +259,10 @@
             filter: alpha(opacity=60);
         }
 
+        .eP{
+            margin-top:15px;
+        }
+
         .datePosted {
             position:relative;
             float:right;
@@ -439,6 +443,7 @@
             top:28px;
             font-size: 12px;
         }
+
     </style>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -938,10 +943,11 @@
             } else if (validTokenContract == 1){
                 $('#tokenContractIcon').show();
                 $('#tokenLink').attr('href', 'https://polygonscan.com/address/' + tokenContract);
-                $('#tokenContractIcon').addClass('fa-check');
-                $('#tokenContractIcon').removeClass('fa-times bad');
+                $('#tokenContractIcon').removeClass('fa-check');
+                $('#tokenContractIcon').addClass('fa-times bad');
 
                 $('#tokenContractStatus').html('<span class="gameFont errorText">You need to allow tipping</span>').show();
+                $('#tokenContractStatus').append('<input type="button" class="walletButtonBig gameFont gameButtonBig" onclick="approveCustomContract(\'' + tokenContract + '\')" value="Approve Token Tipping" />');
                 $('#tipsValid').val(0);
             } else if (validTokenContract == -1){
                 $('#tokenLink').attr('href','#lsRet');

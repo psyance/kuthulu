@@ -60,11 +60,11 @@ let contractAddressFollowers = '0xB2b6F4e3Cff5794E0b614698e3bcD9f6C35bc53D';
 let contractAddressBlocking = '0x31D9111c8A47045168E28Dfd202addeB056dadaE';
 let contractAddressTagged = '0x8A6753a89C66EB6f16d47dbD5CBB3557e5342813';
 // let contractAddressGroupMetadata = '0xA16B189336fA7cf5cbB0c9d095f8202e5fdEB2C1';
-// let contractAmulets = '0x3753CB80615F8ddc705a4eA8af91e02Cea938964';
-// let contractKultists = '0x1417984f4CC5d04F07b854090c8B9e4BC957BD6A';
+let contractAddressAmulets = '0x3753CB80615F8ddc705a4eA8af91e02Cea938964';
+let contractAddressKultists = '0x1417984f4CC5d04F07b854090c8B9e4BC957BD6A';
 let contractAddressRaffleTix = '0xEb240D9DDc9482D3d2BFc75b708BB059ca7188f1';
-// let contractSOULS = '0xb56225303810e66c71a404DD262B198a0db61f71';
-// let contractRewards = '0x540d3B9214C2552dE2E7A3d0907034550BADea98';
+let contractAddressSOULS = '0xb56225303810e66c71a404DD262B198a0db61f71';
+// let contractAddressRewards = '0x540d3B9214C2552dE2E7A3d0907034550BADea98';
 // let contractAddressSampleContractHook = '0x5AF1d48Db17A6026929041Df8C3Cc30f19803B55';
 
 
@@ -141,6 +141,8 @@ let allMessagesPos = 0;
 
 const validImgExt = ['gif','jpg','jpeg','png','webp','svg'];
 
+const nullAddress = '0x0000000000000000000000000000000000000000';
+
 // Get any query strings
 const qs = new URLSearchParams(window.location.search);
 
@@ -152,7 +154,7 @@ window.addEventListener('load', async() => {
 async function start() {
 
     // Test the Blockchain Provider
-    let testCall = await contractKUTHULUTokens.methods.balanceOf('0x0000000000000000000000000000000000000000').call()
+    let testCall = await contractKUTHULUTokens.methods.balanceOf(nullAddress).call()
         .then(result => {
             console.log('Infura Working');
             return true;
@@ -166,7 +168,7 @@ async function start() {
         // Try Alchemy
         let testContract = new web3alc.eth.Contract(abiTokens, contractAddressDOOM);
 
-        testCall = await testContract.methods.balanceOf('0x0000000000000000000000000000000000000000').call()
+        testCall = await testContract.methods.balanceOf(nullAddress).call()
             .then(result => {
                 console.log('Switching to Alchemy...');
 
@@ -184,7 +186,6 @@ async function start() {
     var w = await checkWallet();
 
     if (validWalletConnection) {
-        console.log('Wallet Address: ' + walletAddress);
 
         $('#myProfile').html('<a class="scroll-to" href="?address=' + walletAddress + '">My Profile</a>');
 
@@ -305,7 +306,6 @@ async function checkWallet(attempt) {
                 // Get their DOOM Balance
                 userDOOMBalance = await contractKUTHULUTokens.methods.balanceOf(walletAddress).call()
                     .then(result => {
-                        console.log('Result:' + result);
                         return result;
                     })
                     .catch(err => {
@@ -582,6 +582,30 @@ async function postMsg() {
             inGroups[i] = inGroup;
         }
 
+        // Check to see if they're allowed to post into each group
+        for (let g=0;g < inGroups.length;g++){
+            let _groupAddress = await contractGroups.methods.getGroupAddressFromID(inGroups[g]).call()
+                .then(result => {
+                    return result;
+                })
+                .catch(err => {
+                    catchError('getGroupID-check', err);
+                });
+
+            let isAllowedToPostToGroup = await contractBlocking.methods.isAllowed(walletAddress, _groupAddress).call()
+                .then(result => {
+                    console.log('In Group ID:' + result);
+                    return result;
+                })
+                .catch(err => {
+                    catchError('inGroups getGroupID', err);
+                });
+
+            if (!isAllowedToPostToGroup){
+                $('#statusMsg').html('<span class="gameFont errorText">You are not allowed to post into a tagged Group</span>');
+                return;
+            }
+        }
 
         if (tips === '' || tips === null || tips === undefined){
             tips = 0;
@@ -634,66 +658,6 @@ async function postMsg() {
             return;
         }
 
-        // Get current gas prices
-        const currentGasPrices = await getCurrentGasPrices();
-
-
-        console.log('Message: ', message);
-        console.log('hashtags: ', hashtags);
-        console.log('tags: ', tags);
-        console.log('tips: ', tips);
-        console.log('uri: ', uri);
-        console.log('attribs: ', [commentLevel, commentTo, repostOf, asGroup, erc20TipAmount]);
-        console.log('inGroups: ', inGroups);
-
-
-
-        // Build data manually
-        const abi = ethers.utils.defaultAbiCoder;
-        let params = abi.encode(
-            ["string"],
-            [ message ],
-            ["string[]"],
-            [ hashtags ],
-            ["address[]"], // encode as address array
-            [ tags ],
-            ["string"],
-            [ uri ],
-            ["uin256[5]"],
-            [ [commentLevel, commentTo, repostOf, asGroup, erc20TipAmount.toString()] ],
-            ["uint256[]"],
-            [ inGroups ],
-            ); // array to encode
-
-
-        const ethereum = window.ethereum;
-        const ethAccounts = await ethereum.request({
-            method: "eth_requestAccounts",
-        });
-        const provider = new ethers.providers.Web3Provider(ethereum)
-        const ethWalletAddress = ethAccounts[0]
-        const signer = provider.getSigner(ethWalletAddress)
-        const doomContract = new ethers.Contract(contractAddress, abiKUTHULU, signer)
-        const estimatedGasLimit = await doomContract.estimateGas.postMsg(message, hashtags, tags, uri, [commentLevel, commentTo, repostOf, asGroup, erc20TipAmount.toString()], inGroups, {value: ethers.utils.parseEther(tips.toString())})
-            .then(async (result) => {
-                console.log('Gas Estimate: ', result.toString());
-                return result;
-            })
-            .catch(async (err) => {
-                let errResp = await catchError('estimateGas', err);
-            });
-
-        const transaction = {
-            "value": ethers.utils.parseEther(tips.toString()),
-            "from": walletAddress,
-            "to": contractAddress,
-            "data": params,
-            "gas": estimatedGasLimit,
-            "gasLimit": estimatedGasLimit,
-            "gasPrice": web3.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
-            "chainId": chainIDRaw
-        };
-
         console.log("MESSAGE: ", message);
         console.log("HASHTAGS: ", hashtags);
         console.log("TAGS: ", tags);
@@ -704,9 +668,8 @@ async function postMsg() {
         console.log("AS GROUP: ", asGroup);
         console.log("ERC20 TIP AMOUNT: ", erc20TipAmount);
         console.log("IN GROUPS: ", inGroups);
-        console.log('TRANSACTION: ', transaction);
 
-        let resp = await contractKUTHULUPub.methods.postMsg(message, hashtags, tags, uri, [commentLevel, commentTo, repostOf, asGroup, erc20TipAmount.toString()], inGroups).send(transaction)
+        let resp = await contractKUTHULUPub.methods.postMsg(message, hashtags, tags, uri, [commentLevel, commentTo, repostOf, asGroup, erc20TipAmount.toString()], inGroups).send({from: walletAddress})
             .then(async (result) => {
                 console.log('Post Results: ', result);
 
@@ -809,41 +772,7 @@ async function mintGroup(){
         return;
     }
 
-    const currentGasPrices = await getCurrentGasPrices();
-
-    const ethereum = window.ethereum;
-    const ethAccounts = await ethereum.request({
-        method: "eth_requestAccounts",
-    });
-    const provider = new ethers.providers.Web3Provider(ethereum)
-    const ethWalletAddress = ethAccounts[0]
-    const signer = provider.getSigner(ethWalletAddress)
-    const groupsContract = new ethers.Contract(contractAddressGroupsTokens, abiGroupTokens, signer)
-    const estimateGas = await groupsContract.estimateGas.mintGroup(groupToMint, {value: Math.trunc(costToMint).toString()});
-
-    console.log('Gas Estimate: ', estimateGas);
-
-    // Build data manually
-    const abi = ethers.utils.defaultAbiCoder;
-    let params = abi.encode(
-        ["string"],
-        [ groupToMint ]
-    ); // array to encode
-
-    const transaction = {
-        "value": costToMint,
-        "from": walletAddress,
-        "to": contractAddressGroupsTokens,
-        "data": params,
-        "gas": web3.utils.toHex(Math.trunc(estimateGas * 1.10)),
-        "gasLimit": web3.utils.toHex(Math.trunc(estimateGas * 1.10)),
-        "gasPrice": web3.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
-        "chainId": chainIDRaw
-    };
-
-    console.log('TRANSACTION: ', transaction);
-
-    let resp = await contractGroupTokensPub.methods.mintGroup(groupToMint).send(transaction)
+    let resp = await contractGroupTokensPub.methods.mintGroup(groupToMint).send({from: walletAddress})
         .then(async (result) => {
             console.log('Post Results: ', result);
 
@@ -883,8 +812,6 @@ async function mintDOOM(amount){
             catchError('costToMintDOOM', err);
         });
 
-    costToMint = 100;
-
     costToMint *= amount;
 
     if (userMATICBalance < costToMint){
@@ -893,41 +820,7 @@ async function mintDOOM(amount){
         return;
     }
 
-    const currentGasPrices = await getCurrentGasPrices();
-
-    const ethereum = window.ethereum;
-    const ethAccounts = await ethereum.request({
-        method: "eth_requestAccounts",
-    });
-    const provider = new ethers.providers.Web3Provider(ethereum)
-    const ethWalletAddress = ethAccounts[0]
-    const signer = provider.getSigner(ethWalletAddress)
-    const tokensContract = new ethers.Contract(contractAddressDOOM, abiTokens, signer)
-    const estimateGas = await tokensContract.estimateGas.publicMint(amount, {value: Math.trunc(costToMint).toString()});
-
-    console.log('Gas Estimate: ', estimateGas);
-
-    // Build data manually
-    const abi = ethers.utils.defaultAbiCoder;
-    let params = abi.encode(
-        ["uint256"],
-        [ amount ]
-    ); // array to encode
-
-    const transaction = {
-        "value": costToMint,
-        "from": walletAddress,
-        "to": contractAddressDOOM,
-        "data": params,
-        "gas": web3.utils.toHex(Math.trunc(estimateGas * 1.10)),
-        "gasLimit": web3.utils.toHex(Math.trunc(estimateGas * 1.10)),
-        "gasPrice": web3.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
-        "chainId": chainIDRaw
-    };
-
-    console.log('TRANSACTION: ', transaction);
-
-    let resp = await contractKUTHULUTokensPub.methods.publicMint(amount).send(transaction)
+    let resp = await contractKUTHULUTokensPub.methods.publicMint(amount).send({from: walletAddress, value: costToMint})
         .then(async (result) => {
             console.log('Post Results: ', result);
 
@@ -945,69 +838,6 @@ async function mintDOOM(amount){
     endLoading();
 }
 
-
-async function catchError(func, err, skipLoadings, type){
-    if (!skipLoadings) {
-        endLoading();
-    }
-
-    console.log('ERROR: ', err);
-
-    let errMsg = 'Something did\'t go as planned :/ <br> Please refresh and try again.';
-    if (err.message !== undefined || err.code !== undefined) {
-        if (err.message !== undefined && err.code === undefined) {
-            if (err.message.indexOf('User denied transaction signature') >= 0) {
-                errMsg = 'You canceled the transaction.';
-            } else if (err.message.indexOf('Transaction has been reverted') >= 0) {
-
-                console.log(err.message);
-                let txHash = err.message.split('transactionHash": "')[1].split('"')[0];
-
-                let errTx = await $.get('https://api.tenderly.co/api/v1/public-contract/' + validNetworkID + '/tx/' + txHash, {"headers": {"X-Access-Key": "nSABfrE2L1nWFmCa2-nHm-T-1obKW0R-"}});
-                console.log(errTx);
-
-                errMsg = "<a href='" + txScanURLPrefix + "/tx/" + txHash + "' target='_blank'>" + errTx.error_message + "</a>";
-
-            } else if (err.message.indexOf('RPC') >= 0){
-                console.log('RPC Error: ', err.message);
-            } else {
-                console.log(err.message, func);
-                errMsg = err.message;
-            }
-        } else if (err.code !== undefined) {
-            if (err.code === -32005) {
-                console.log('MM Timeout ', func)
-                errMsg = "MetaMask was unable to reach the blockchain (rate limiting)<br /> Please try again in a few seconds.";
-            } else if (err.code === -32603) {
-                console.log('MM RPC Error ', func);
-                if (err.data.message.toLowerCase().indexOf('execution reverted') >= 0) {
-                    errMsg = err.data.message.replace('execution reverted: ','');
-                }
-            } else if (err.code === 4001){
-                console.log('User Canceled Transaction', func);
-                errMsg = "Transaction rejected! Why? Did I do something wrong? Is it me? I'm sorry...🥺";
-            } else {
-                console.log(err.message, func);
-                errMsg = '1 - ' + err.code + ' : ' + func;
-            }
-        }else{
-            console.log(err.message, func);
-            errMsg = '2 - ' + err.message + ' : ' + func;
-        }
-    } else {
-        console.log(err.message, func);
-        errMsg = err ;
-    }
-
-
-    console.log('Error Func: ' + func);
-    $('#statusMsg').html('<span class="gameFont" id="errorText">' + errMsg + '</span>');
-
-    if (!skipLoadings) {
-        $('#playButtons').show();
-    }
-}
-
 async function addTokenToMetaMask(tokenName){
     if (validWalletConnection) {
 
@@ -1020,7 +850,7 @@ async function addTokenToMetaMask(tokenName){
             tokenAddress = contractAddressDOOM.toString();
             tokenSymbol = 'DOOM';
             tokenDecimals = 18;
-            tokenImage = 'https://kryptosucks.s3.amazonaws.com/tokens/doom/doom_token.png';
+            tokenImage = 'https://kuthulu.s3.amazonaws.com/doom_token.png';
         }
 
         try {
@@ -1050,7 +880,7 @@ async function addTokenToMetaMask(tokenName){
 }
 
 
-async function approve(){
+async function approve(_contract){
     if (validWalletConnection) {
 
         var amount = 10000000000;
@@ -1059,7 +889,11 @@ async function approve(){
 
         startLoading('Setting Allowance...');
 
-        var resp = await contractKUTHULUTokensPub.methods.approve(contractAddress, bntokens).send({from: walletAddress})
+        if (!_contract){
+            _contract = contractAddress;
+        }
+
+        var resp = await contractKUTHULUTokensPub.methods.approve(_contract, bntokens).send({from: walletAddress})
             .then(result => {
 
                 endLoading();
@@ -1084,46 +918,48 @@ async function approve(){
     }
 }
 
+async function approveCustomContract(tokenContractAddress){
+    if (validWalletConnection) {
+
+        var amount = 10000000000;
+        var tokens = web3.utils.toWei(amount.toString(), 'ether');
+        var bntokens = web3.utils.toBN(tokens)
+
+        startLoading('Setting Allowance...');
+
+        let contractCustomTokensPub = new web3.eth.Contract(abiTokens, tokenContractAddress);
+        var resp = await contractCustomTokensPub.methods.approve(contractAddress, bntokens).send({from: walletAddress})
+            .then(result => {
+
+                endLoading();
+
+                if (result.status === true){
+                    $('#tokenContractStatus').html('<span class="gameFont errorText">Approved! Click Verify Again ☝️</span>').show();
+                }
+
+                return result;
+            })
+            .catch(err => {
+                endLoading();
+                $('#tokenContractStatus').html('<span class="gameFont errorText">Did\'t work :/ Check the Contract Address</span>').show();
+                catchError('approveCustomContract', err);
+            });
+
+    } else {
+        console.log("invalid wallet connection-2");
+    }
+}
+
 async function like(postID){
     if (validWalletConnection) {
 
         startLoading('Liking post...');
 
-        const currentGasPrices = await getCurrentGasPrices();
-
-        const ethereum = window.ethereum;
-        const ethAccounts = await ethereum.request({
-            method: "eth_requestAccounts",
-        });
-        const provider = new ethers.providers.Web3Provider(ethereum)
-        const signer = provider.getSigner(walletAddress)
-        const kuthuluContract = new ethers.Contract(contractAddress, abiKUTHULU, signer)
-        const estimateGas = await kuthuluContract.estimateGas.toggleLike(postID);
-
-        console.log('Gas Estimate: ', estimateGas);
-
-        // Build data manually
-        const abi = ethers.utils.defaultAbiCoder;
-        let params = abi.encode(
-            ["uint256"],
-            [ postID ]
-        ); // array to encode
-
-        const transaction = {
-            "from": walletAddress,
-            "data": params,
-            "gas": web3.utils.toHex(Math.trunc(estimateGas * 1.10)),
-            "gasLimit": web3.utils.toHex(Math.trunc(estimateGas * 1.10)),
-            "gasPrice": web3.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
-            "chainId": chainIDRaw
-        };
-
-        console.log('TRANSACTION: ', transaction);
-
-        let resp = await contractKUTHULUPub.methods.toggleLike(postID).send(transaction)
+        var resp = await contractKUTHULUPub.methods.toggleLike(postID).send({from: walletAddress})
             .then(result => {
+
                 endLoading();
-                // window.location.reload();
+                return result;
             })
             .catch(err => {
                 endLoading();
@@ -1141,40 +977,7 @@ async function followUser(address, accountType){
 
         startLoading('Following ' + accountType + '...');
 
-        console.log('Following: ', address);
-
-        const currentGasPrices = await getCurrentGasPrices();
-
-        const ethereum = window.ethereum;
-        const ethAccounts = await ethereum.request({
-            method: "eth_requestAccounts",
-        });
-        const provider = new ethers.providers.Web3Provider(ethereum)
-        const signer = provider.getSigner(walletAddress)
-        const kuthuluContract = new ethers.Contract(contractAddress, abiKUTHULU, signer)
-        const estimateGas = await kuthuluContract.estimateGas.followUser(address);
-
-        console.log('Gas Estimate: ', estimateGas);
-
-        // Build data manually
-        const abi = ethers.utils.defaultAbiCoder;
-        let params = abi.encode(
-            ["address"],
-            [ address ]
-        ); // array to encode
-
-        const transaction = {
-            "from": walletAddress,
-            "data": params,
-            "gas": web3.utils.toHex(Math.trunc(estimateGas * 1.10)),
-            "gasLimit": web3.utils.toHex(Math.trunc(estimateGas * 1.10)),
-            "gasPrice": web3.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
-            "chainId": chainIDRaw
-        };
-
-        console.log('TRANSACTION: ', transaction);
-
-        let resp = await contractKUTHULUPub.methods.followUser(address).send(transaction)
+        let resp = await contractKUTHULUPub.methods.followUser(address).send({from: walletAddress})
             .then(result => {
                 endLoading();
                 // window.location.reload();
@@ -1193,47 +996,16 @@ async function followUser(address, accountType){
 async function unfollowUser(address){
     if (validWalletConnection) {
 
-        startLoading('Following user...');
+        startLoading('Unfollowing user...');
 
-        const currentGasPrices = await getCurrentGasPrices();
-
-        const ethereum = window.ethereum;
-        const ethAccounts = await ethereum.request({
-            method: "eth_requestAccounts",
-        });
-        const provider = new ethers.providers.Web3Provider(ethereum)
-        const signer = provider.getSigner(walletAddress)
-        const kuthuluContract = new ethers.Contract(contractAddress, abiKUTHULU, signer)
-        const estimateGas = await kuthuluContract.estimateGas.unfollowUser(address);
-
-        console.log('Gas Estimate: ', estimateGas);
-
-        // Build data manually
-        const abi = ethers.utils.defaultAbiCoder;
-        let params = abi.encode(
-            ["address"],
-            [ address ]
-        ); // array to encode
-
-        const transaction = {
-            "from": walletAddress,
-            "data": params,
-            "gas": web3.utils.toHex(Math.trunc(estimateGas * 1.10)),
-            "gasLimit": web3.utils.toHex(Math.trunc(estimateGas * 1.10)),
-            "gasPrice": web3.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
-            "chainId": chainIDRaw
-        };
-
-        console.log('TRANSACTION: ', transaction);
-
-        let resp = await contractKUTHULUPub.methods.unfollowUser(address).send(transaction)
+        let resp = await contractKUTHULUPub.methods.unfollowUser(address).send({from: walletAddress})
             .then(result => {
                 endLoading();
                 // window.location.reload();
             })
             .catch(err => {
                 endLoading();
-                catchError('followUser', err);
+                catchError('unfollowUser', err);
             });
 
     } else {
@@ -1258,48 +1030,8 @@ async function toggleBlock(address, groupID){
                 catchError('usrBlockingMap-whitelistcheck', err);
             });
 
-        const currentGasPrices = await getCurrentGasPrices();
-
-        const ethereum = window.ethereum;
-        const ethAccounts = await ethereum.request({
-            method: "eth_requestAccounts",
-        });
-        const provider = new ethers.providers.Web3Provider(ethereum)
-        const signer = provider.getSigner(walletAddress)
-        const kuthuluContract = new ethers.Contract(contractAddressBlocking, abiBlocking, signer)
-
-        console.log('toggle block: ', address, groupID);
-
-        let estimateGas;
         if (usingWhitelist){
-            estimateGas = await kuthuluContract.estimateGas.updateWhitelist(address, groupID);
-        } else {
-            estimateGas = await kuthuluContract.estimateGas.updateBlacklist(address, groupID);
-        }
-
-
-        console.log('Gas Estimate: ', estimateGas);
-
-        // Build data manually
-        const abi = ethers.utils.defaultAbiCoder;
-        let params = abi.encode(
-            ["address"],
-            [ address ]
-        ); // array to encode
-
-        const transaction = {
-            "from": walletAddress,
-            "data": params,
-            "gas": web3.utils.toHex(Math.trunc(estimateGas * 1.10)),
-            "gasLimit": web3.utils.toHex(Math.trunc(estimateGas * 1.10)),
-            "gasPrice": web3.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
-            "chainId": chainIDRaw
-        };
-
-        console.log('TRANSACTION: ', transaction);
-
-        if (usingWhitelist){
-            let resp = await contractBlockingPub.methods.updateWhitelist(address, groupID).send(transaction)
+            let resp = await contractBlockingPub.methods.updateWhitelist(address, groupID).send({from: walletAddress})
                 .then(result => {
                     console.log("Whitelist Updated");
                     endLoading();
@@ -1310,7 +1042,7 @@ async function toggleBlock(address, groupID){
                     catchError('updateWhitelist', err);
                 });
         } else {
-            let resp = await contractBlockingPub.methods.updateBlacklist(address, groupID).send(transaction)
+            let resp = await contractBlockingPub.methods.updateBlacklist(address, groupID).send({from: walletAddress})
                 .then(result => {
                     console.log("Blacklist Updated");
                     endLoading();
@@ -1334,7 +1066,7 @@ async function deletePost(msgID){
 
         startLoading('Erasing post...');
 
-        let posts = await contractKUTHULU.methods.getMsgsByIDs([msgID], false, '0x0000000000000000000000000000000000000000').call()
+        let posts = await contractKUTHULU.methods.getMsgsByIDs([msgID], false, nullAddress).call()
             .then(result => {
                 result = formatMsgRespToJSON(result);
                 console.log('Message Data:', result);
@@ -1350,38 +1082,7 @@ async function deletePost(msgID){
             return;
         }
 
-        const currentGasPrices = await getCurrentGasPrices();
-
-        const ethereum = window.ethereum;
-        const ethAccounts = await ethereum.request({
-            method: "eth_requestAccounts",
-        });
-        const provider = new ethers.providers.Web3Provider(ethereum)
-        const signer = provider.getSigner(walletAddress)
-        const kuthuluContract = new ethers.Contract(contractAddress, abiKUTHULU, signer)
-        const estimateGas = await kuthuluContract.estimateGas.eraseMsg(msgID);
-
-        console.log('Gas Estimate: ', estimateGas);
-
-        // Build data manually
-        const abi = ethers.utils.defaultAbiCoder;
-        let params = abi.encode(
-            ["uint256"],
-            [ msgID ]
-        ); // array to encode
-
-        const transaction = {
-            "from": walletAddress,
-            "data": params,
-            "gas": web3.utils.toHex(Math.trunc(estimateGas * 1.10)),
-            "gasLimit": web3.utils.toHex(Math.trunc(estimateGas * 1.10)),
-            "gasPrice": web3.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
-            "chainId": chainIDRaw
-        };
-
-        console.log('TRANSACTION: ', transaction);
-
-        let resp = await contractKUTHULUPub.methods.eraseMsg(msgID).send(transaction)
+        let resp = await contractKUTHULUPub.methods.eraseMsg(msgID).send({from: walletAddress})
             .then(result => {
                 endLoading();
                 // window.location.reload();
@@ -1408,45 +1109,7 @@ async function tip(postID){
             tips = parseFloat(tips);
         }
 
-        const currentGasPrices = await getCurrentGasPrices();
-
-        const ethereum = window.ethereum;
-        const ethAccounts = await ethereum.request({
-            method: "eth_requestAccounts",
-        });
-        const provider = new ethers.providers.Web3Provider(ethereum)
-        const signer = provider.getSigner(walletAddress)
-        const kuthuluContract = new ethers.Contract(contractAddressTips, abiTips, signer)
-        const estimateGas = await kuthuluContract.estimateGas.addTipFromPost(postID, {value: ethers.utils.parseEther(tips.toString())})
-            .then(async (result) => {
-                console.log('Gas Estimate: ', result);
-                return result;
-            })
-            .catch(async (err) => {
-                let errResp = await catchError('estimateGas', err);
-            });
-
-        // Build data manually
-        const abi = ethers.utils.defaultAbiCoder;
-        let params = abi.encode(
-            ["uint256"],
-            [ postID ]
-        ); // array to encode
-
-        const transaction = {
-            "value": ethers.utils.parseEther(tips.toString()),
-            "from": walletAddress,
-            "to": contractAddressTips,
-            "data": params,
-            "gas": web3.utils.toHex(Math.trunc(estimateGas * 1.10)),
-            "gasLimit": web3.utils.toHex(Math.trunc(estimateGas * 1.10)),
-            "gasPrice": web3.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
-            "chainId": chainIDRaw
-        };
-
-        console.log('TRANSACTION: ', transaction);
-
-        let resp = await contractTipsPub.methods.addTipFromPost(postID).send(transaction)
+        let resp = await contractTipsPub.methods.addTipFromPost(postID).send({from: walletAddress})
             .then(result => {
                 endLoading();
                 // window.location.reload();
@@ -1468,43 +1131,7 @@ async function toggleWhitelist(groupID){
 
         startLoading('Toggling Whitelist...');
 
-        const currentGasPrices = await getCurrentGasPrices();
-
-        const ethereum = window.ethereum;
-        const ethAccounts = await ethereum.request({
-            method: "eth_requestAccounts",
-        });
-        const provider = new ethers.providers.Web3Provider(ethereum)
-        const signer = provider.getSigner(walletAddress)
-        const kuthuluContract = new ethers.Contract(contractAddressBlocking, abiBlocking, signer)
-        const estimateGas = await kuthuluContract.estimateGas.toggleWhiteList(groupID)
-            .then(async (result) => {
-                console.log('Gas Estimate: ', result);
-                return result;
-            })
-            .catch(async (err) => {
-                let errResp = await catchError('estimateGas', err);
-            });
-
-        // Build data manually
-        const abi = ethers.utils.defaultAbiCoder;
-        let params = abi.encode(
-            ["uint256"],
-            [ groupID ]
-        ); // array to encode
-
-        const transaction = {
-            "from": walletAddress,
-            "data": params,
-            "gas": web3.utils.toHex(Math.trunc(estimateGas * 1.10)),
-            "gasLimit": web3.utils.toHex(Math.trunc(estimateGas * 1.10)),
-            "gasPrice": web3.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
-            "chainId": chainIDRaw
-        };
-
-        console.log('TRANSACTION: ', transaction);
-
-        let resp = await contractBlockingPub.methods.toggleWhiteList(groupID).send(transaction)
+        let resp = await contractBlockingPub.methods.toggleWhiteList(groupID).send({from: walletAddress})
             .then(result => {
                 endLoading()
                 // window.location.reload();
@@ -1525,34 +1152,7 @@ async function claimTips(groupID){
 
         startLoading('Claiming Tips...');
 
-        const currentGasPrices = await getCurrentGasPrices();
-
-        const ethereum = window.ethereum;
-        const ethAccounts = await ethereum.request({
-            method: "eth_requestAccounts",
-        });
-        const provider = new ethers.providers.Web3Provider(ethereum)
-        const signer = provider.getSigner(walletAddress)
-        const kuthuluContract = new ethers.Contract(contractAddressTips, abiTips, signer)
-        const estimateGas = await kuthuluContract.estimateGas.claimTips(groupID);
-
-        console.log('Gas Estimate: ', estimateGas);
-
-        // Build data manually
-        const abi = ethers.utils.defaultAbiCoder;
-
-        const transaction = {
-            "from": walletAddress,
-            "data": '',
-            "gas": web3.utils.toHex(Math.trunc(estimateGas * 1.10)),
-            "gasLimit": web3.utils.toHex(Math.trunc(estimateGas * 1.10)),
-            "gasPrice": web3.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
-            "chainId": chainIDRaw
-        };
-
-        console.log('TRANSACTION: ', transaction);
-
-        let resp = await contractTipsPub.methods.claimTips(groupID).send(transaction)
+        let resp = await contractTipsPub.methods.claimTips(groupID).send({from: walletAddress})
             .then(result => {
 
                 endLoading();
@@ -1580,34 +1180,7 @@ async function claimTix(){
 
         startLoading('Claiming Raffle Tickets...');
 
-        const currentGasPrices = await getCurrentGasPrices();
-
-        const ethereum = window.ethereum;
-        const ethAccounts = await ethereum.request({
-            method: "eth_requestAccounts",
-        });
-        const provider = new ethers.providers.Web3Provider(ethereum)
-        const signer = provider.getSigner(walletAddress)
-        const kuthuluContract = new ethers.Contract(contractAddressRaffleTix, abiRaffleTickets, signer)
-        const estimateGas = await kuthuluContract.estimateGas.claimTix();
-
-        console.log('Gas Estimate: ', estimateGas);
-
-        // Build data manually
-        const abi = ethers.utils.defaultAbiCoder;
-
-        const transaction = {
-            "from": walletAddress,
-            "data": '',
-            "gas": web3.utils.toHex(Math.trunc(estimateGas * 1.10)),
-            "gasLimit": web3.utils.toHex(Math.trunc(estimateGas * 1.10)),
-            "gasPrice": web3.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
-            "chainId": chainIDRaw
-        };
-
-        console.log('TRANSACTION: ', transaction);
-
-        let resp = await contractRaffleTixPub.methods.claimTix().send(transaction)
+        let resp = await contractRaffleTixPub.methods.claimTix().send({from: walletAddress})
             .then(result => {
 
                 endLoading();
@@ -1799,7 +1372,7 @@ async function getPosts() {
         // Now get the profile data
         let groupProfileData = await contractProfiles.methods.getUserDetails(groupAddress).call()
             .then(result => {
-                console.log('Group Profile Data:', result);
+                console.log('🔥 Group Profile Data:', result);
                 return formatUserProfileToJSON(result);
             })
             .catch(err => {
@@ -2033,8 +1606,8 @@ async function processMessages(msgIDs, isComment, showMoreButton, getOnlyFollowi
 
                 let comments = await contractKUTHULU.methods.getMsgsByIDs(commentIDs, false, walletAddress).call()
                     .then(result => {
-                        result = formatMsgRespToJSON(result);
                         console.log('Comment Data:' + result);
+                        result = formatMsgRespToJSON(result);
                         return result;
                     })
                     .catch(err => {
@@ -2180,7 +1753,10 @@ async function makeProfile(userAddress){
             catchError('isAllowed', err);
         });
 
+    let multiSigDisplay = null;
+
     if (validWalletConnection) {
+        // If this isn't their profile (or it's a group)
         if (walletAddress.toLowerCase() !== userAddress.toLowerCase()) {
 
             // Check if they're the multi-sig lock address
@@ -2193,18 +1769,73 @@ async function makeProfile(userAddress){
                     catchError('checkTips', err);
                 });
 
+            // Check if group multi-sig locked
+            // 0 = Is Locked (True / False)
+            // 1 = Has Address set for locking (True / False)
+            let isMultiSigLocked = await contractGroupTokens.methods.isMultiSigLocked(userProfile.groupID).call()
+                .then(result => {
+                    console.log("Is Mult-Sig Locked: ", result);
+                    return result;
+                })
+                .catch(err => {
+                    catchError('isAllowed', err);
+                });
+
+            if (isMultiSigLocked[0]){
+                multiSigDisplay = "<div id='multiSigAddress' class='muted good'>Multi-Sig Lock Address: " + multiSigAddress + '</div>';
+            }
+
             if (isGroupOwner){
                 post += '<a href="#" onclick="resetEdits();$(\'#editProfileWrapper\').show();" class="dropdown-item"><img src="images/profile.png" class="menuImage" /> Edit Profile</a>';
                 post += '<a href="#" onclick="resetEdits();$(\'#editAvatarNFT\').show();" class="dropdown-item"><img src="images/nftavatar.png" class="menuImage" /> Set NFT As Pic</a>';
                 post += '<a href="#" onclick="resetEdits();$(\'#groupAddMembers\').show();" class="dropdown-item"><img src="images/addMember.png" class="menuImage" /> Add Member</a>';
                 post += '<a href="#" onclick="resetEdits();$(\'#groupRemoveMembers\').show();" class="dropdown-item"><img src="images/removeMember.png" class="menuImage" /> Remove Member</a>';
-                if (!isMultiSigLocked[0]) {
-                    post += '<a href="#" onclick="resetEdits();$(\'#lockGroup\').show();" class="dropdown-item"><img src="images/nftLocked.png" class="menuImage" /> Lock w/ MultiSig</a>';
+
+                post += '<div class="dropdown-divider"></div>';
+
+                // Check if they're using a whitelist
+                let usingWhitelist = await contractBlocking.methods.usrBlockingMap(userAddress).call()
+                    .then(result => {
+                        console.log('Using Whitelist:', result[0]);
+                        return result[0];
+                    })
+                    .catch(err => {
+                        catchError('usrBlockingMap-whitelistcheck', err);
+                    });
+
+                if (usingWhitelist){
+                    post += '<a href="#" onclick="toggleWhitelist(\'' + userProfile.groupID + '\');" class="dropdown-item"><img src="images/blacklist.png" class="menuImage" /> Use Blacklist</a>';
                 } else {
-                    post += '<a href="#" class="dropdown-item"><img src="images/profile.png" class="menuImage" /> Multi-Sig Locked</a>';
+                    post += '<a href="#" onclick="toggleWhitelist(\'' + userProfile.groupID + '\');" class="dropdown-item"><img src="images/whitelist.png" class="menuImage" /> Use Whitelist</a>';
+                    post += '<a href="#" onclick="resetEdits();$(\'#nftWhitelisting\').show();" class="dropdown-item"><img src="images/nftWhitelist.png" class="menuImage" /> Use NFT Whitelist</a>';
                 }
 
                 post += '<div class="dropdown-divider"></div>';
+
+                if (!isMultiSigLocked[0] && !isMultiSigLocked[1]) {
+                    post += '<a href="#" onclick="resetEdits();$(\'#lockGroup\').show();" class="dropdown-item"><img src="images/nftLocked.png" class="menuImage" /> Lock w/ MultiSig</a>';
+                } else if (!isMultiSigLocked[0] && isMultiSigLocked[1]) {
+                    post += '<a href="#" onclick="resetEdits();$(\'#lockGroup\').show();" class="dropdown-item"><img src="images/nftLocked.png" class="menuImage" /> Change MultiSig</a>';
+                } else {
+                    post += '<a href="#" class="dropdown-item"><img src="images/nftLocked.png" class="menuImage" /> Multi-Sig Locked</a>';
+                }
+
+
+                post += '<div class="dropdown-divider"></div>';
+            } else {
+                // Check to see if they're a member of the group
+                let isMember = await contractGroups.methods.isMemberOf(walletAddress, userProfile.groupID).call()
+                    .then(result => {
+                        console.log('Is Member of Group: ' + result);
+                        return result;
+                    })
+                    .catch(err => {
+                        catchError('checkTips', err);
+                    });
+                if (isMember){
+                    post += '<a href="#lsRet" onclick="leaveGroup(\'' + userProfile.groupID + '\')" class="dropdown-item"><img src="images/removeMember.png" class="menuImage" /> Leave Group</a>';
+                    post += '<div class="dropdown-divider"></div>';
+                }
             }
 
             // Check if user already following
@@ -2240,9 +1871,9 @@ async function makeProfile(userAddress){
                 });
 
             if (isAllowed) {
-                post += '<a href="#lsRet" onclick="toggleBlock(\'' + userAddress + '\', ' + userProfile.groupID + ')" class="dropdown-item"><img src="images/block.png" class="menuImage" /> Block User</a>';
+                post += '<a href="#lsRet" onclick="toggleBlock(\'' + userAddress + '\', ' + userProfile.groupID + ')" class="dropdown-item"><img src="images/block.png" class="menuImage" /> Block ' + accountType + '</a>';
             } else {
-                post += '<a href="#lsRet" onclick="toggleBlock(\'' + userAddress + '\', ' + userProfile.groupID + ')" class="dropdown-item"><img src="images/unblock.png" class="menuImage" /> Unblock User</a>';
+                post += '<a href="#lsRet" onclick="toggleBlock(\'' + userAddress + '\', ' + userProfile.groupID + ')" class="dropdown-item"><img src="images/unblock.png" class="menuImage" /> Unblock ' + accountType + '</a>';
             }
 
             if (walletAddress.toLowerCase() === multiSigAddress.toLowerCase()) {
@@ -2266,9 +1897,9 @@ async function makeProfile(userAddress){
             post += '<a href="#" onclick="resetEdits();$(\'#editProfileWrapper\').show();" class="dropdown-item"><img src="images/profile.png" class="menuImage" /> Edit Profile</a>';
             post += '<a href="#" onclick="resetEdits();$(\'#editAvatarNFT\').show();" class="dropdown-item"><img src="images/nftavatar.png" class="menuImage" /> Set NFT As Pic</a>';
             if (usingWhitelist){
-                post += '<a href="#" onclick="toggleWhitelist(' + userProfile.groupID + ');" class="dropdown-item"><img src="images/blacklist.png" class="menuImage" /> Use Blacklist</a>';
+                post += '<a href="#" onclick="toggleWhitelist(0);" class="dropdown-item"><img src="images/blacklist.png" class="menuImage" /> Use Blacklist</a>';
             } else {
-                post += '<a href="#" onclick="toggleWhitelist(' + userProfile.groupID + ');" class="dropdown-item"><img src="images/whitelist.png" class="menuImage" /> Use Whitelist</a>';
+                post += '<a href="#" onclick="toggleWhitelist(0);" class="dropdown-item"><img src="images/whitelist.png" class="menuImage" /> Use Whitelist</a>';
             }
 
         }
@@ -2321,11 +1952,15 @@ async function makeProfile(userAddress){
             .catch(err => {
                 catchError('groupDetails', err);
             });
-        post += '<span class="profileDetail muted" style="margin-left:10px;">( <a href="?admins=' + userProfile.groupID + '">' + groupMembers.length + '</a> Admins )</span>';
+        post += '<span class="profileDetail muted" style="margin-left:10px;">( <a href="?admins=' + userProfile.groupID + '">' + groupMembers.length + '</a> Members )</span>';
     }
 
     post += '<div class="muted">' + userAddress + '</div>';
     post += '</div>';
+
+    if (multiSigDisplay){
+        post += multiSigDisplay;
+    }
 
 
     // Follower and Tips Counts
@@ -2386,7 +2021,7 @@ async function makeProfile(userAddress){
         let groupOwnerAddress = await contractGroups.methods.getOwnerOfGroupByAddress(userAddress).call()
             .then(result => {
                 console.log('Group Owner: ', result);
-                if (result.groupAddress !== '0x0000000000000000000000000000000000000000'){
+                if (result.groupAddress !== nullAddress){
                     return result;
                 } else {
                     return '';
@@ -2421,10 +2056,63 @@ async function makeProfile(userAddress){
 
     post += '</div>';
 
+    if (userProfile.groupID > 0) {
 
+        // If this is a group, check to see if they have NFT whitelisting enabled
+        let whitelisting = await contractBlocking.methods.usrBlockingMap(userAddress).call()
+            .then(result => {
+                console.log('Group Blocks in Place: ', result);
+                return result;
+            })
+            .catch(err => {
+                catchError('usrBlockingMap', err);
+            });
+
+        if (whitelisting[0]) {
+            post += 'Group is using Whitelisting';
+        }
+        if (whitelisting[1][0] !== nullAddress) {
+            post += '<div class="messageWrapper" style="margin-top:-1px;background-color:rgb(103 25 131 / 40%);padding:8px;text-align:center;">';
+            post += '<img src="images/nftWhitelist.png" style="margin-right:5px;" /> NFT Whitelisting Contract: ';
+
+            // Only ERC20 / ERC721 are supported right now
+            let contractType = await detectTokenType(whitelisting[1][0]);
+
+            let minTokenReq = whitelisting[1][1];
+            let tokenType = "NFTs";
+            if (contractType === 'ERC20') {
+                minTokenReq = web3.utils.fromWei(minTokenReq);
+                tokenType = "Coins"
+            }
+
+            let contractCN = whitelisting[1][0];
+            // check for a common name for the contract
+            if (whitelisting[1][0] === contractAddressDOOM) {
+                contractCN = 'DOOM';
+            } else if (whitelisting[1][0] === contractAddressAmulets) {
+                contractCN = 'KUTHULU Amulets';
+            } else if (whitelisting[1][0] === contractAddressKultists) {
+                contractCN = 'KUTHULU Kultists';
+            } else if (whitelisting[1][0] === contractAddressSOULS) {
+                contractCN = 'KUTHULU SOULS';
+            } else if (whitelisting[1][0] === contractAddressRaffleTix) {
+                contractCN = 'KUTHULU Raffle Tickets';
+            }
+
+            post += '<a href="' + txScanURLPrefix + 'address/' + whitelisting[1][0] + '" target="_blank">' + contractCN + '</a><br />';
+
+
+            post += tokenType + ' needed to post in Space: <span style="font-weight:bold;">' + minTokenReq + '</span>';
+            post += '</div>';
+        }
+    }
+
+
+    // All the profile update forms
     if (walletAddress.toLowerCase() === userAddress.toLowerCase() || isGroupOwner){
-        post += '<div id="editProfileWrapper" style="display:none;margin-top:20px;">';
         post += '<input type="hidden" id="groupID" name="groupID" value="' + userProfile.groupID + '" />';
+
+        post += '<div id="editProfileWrapper" style="display:none;margin-top:20px;">';
         post += '<div class="eP">Location: <input type="text" name="location" id="location" /></div>';
         post += '<div class="eP">Avatar URL: <input type="text" name="avatar" id="avatar" /></div>';
         post += '<div class="eP">URI: <input type="text" name="profileuri" id="profileuri" /></div>';
@@ -2434,10 +2122,17 @@ async function makeProfile(userAddress){
 
         post += '<div id="editAvatarNFT" style="display:none;margin-top:20px;">';
         post += '<h1 class="gameFont text-white">NFT must be on Polygon</h1>';
-        post += '<input type="hidden" id="groupID" name="groupID" value="' + userProfile.groupID + '" />';
-        post += '<div class="eP">NFT Avatar Contract: <input type="text" name="tokenContract" id="tokenContract" /></div>';
+        post += '<div class="eP">NFT Avatar Contract: <input type="text" name="tokenContract" id="avatarTokenContract" /></div>';
         post += '<div class="eP">NFT Avatar Token ID: <input type="text" name="tokenID" id="tokenID" /></div>';
-        post += '<input type="button" class="walletButtonBig gameFont gameButtonBig" onclick="setNFTAvatar(' + userProfile.groupID + ')" value="Set NFT As Avatar" />';
+        post += '<input type="button" class="walletButtonBig gameFont gameButtonBig" onclick="setNFTAvatar(\'' + userProfile.groupID + '\')" value="Set NFT As Avatar" />';
+        post += '</div>';
+
+        post += '<div id="nftWhitelisting" style="display:none;margin-top:20px;" class="messageWrapper">';
+        post += '<div class="datePosted"><a href="#lsRet" onclick="$(\'#nftWhitelisting\').hide();"><i class="fas fa-times good"></i></a></div>'
+        post += '<h1 class="gameFont text-white">NFT must be on Polygon</h1>';
+        post += '<div class="eP">NFT Contract: <input type="text" name="tokenContract" id="nftTokenContract" /></div>';
+        post += '<div class="eP">Minimum Amount Owned: <input type="text" name="minTokens" id="minTokens" /> (<a href="#" onclick="$(\'#minTokens\').val(parseFloat($(\'#minTokens\').val()) * ethDec)">to wei</a>)</div>';
+        post += '<input type="button" class="walletButtonBig gameFont gameButtonBig" onclick="setNFTWhitelist(\'' + userProfile.groupID + '\')" value="Set NFT Whitelisting" />';
         post += '</div>';
 
         post += '<div id="groupAddMembers" style="display:none;margin-top:20px;">';
@@ -2457,7 +2152,7 @@ async function makeProfile(userAddress){
 
         post += '<div id="editName" style="display:none;margin-top:20px;">';
         post += '<div class="eP">Handle: <input type="text" name="handle" id="handle" /></div>';
-        post += '<div>It costs ' + costToUpdateHandle / ethDec + ' DOOM to update your handle (to prevent name squatting)</div>';
+        post += '<div>It costs <img src="images/token-DOOM.png" style="width:16px;height:16px;" /> ' + costToUpdateHandle / ethDec + ' DOOM to update your handle (to prevent name squatting)</div>';
 
         if (parseInt(userDOOMBalance) >= parseInt(costToUpdateHandle)) {
             post += '<input id="updateHandle" type="button" class="walletButtonBig gameFont gameButtonBig" onclick="updateHandle()" value="Update Handle" />';
@@ -2467,7 +2162,9 @@ async function makeProfile(userAddress){
         post += '</div>';
     }
 
-    if (userProfile.groupID > 0){
+
+    if (userProfile.groupID > 0) {
+        // Show the Go-To Space button
         post += '<a href="index.html?group=' + userProfile.handle + '"><input id="gotoSpace" type="button" class="walletButtonBig gameFont gameButtonBig" value="Go To %' + userProfile.handle + ' Space" /></a>';
     }
 
@@ -2483,6 +2180,41 @@ function resetEdits(){
     $('#editName').hide();
 }
 
+
+async function detectTokenType(_contractAddress) {
+    let abiCustomTokens = [{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"name":"","type":"address"}],"type":"function"},{"inputs":[{"internalType":"address[]","name":"accounts","type":"address[]"},{"internalType":"uint256[]","name":"ids","type":"uint256[]"}],"name":"balanceOfBatch","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"type":"function"}];
+    console.log("Contract to check", _contractAddress);
+    let contractCustomToken = new web3inf.eth.Contract(abiCustomTokens, _contractAddress);
+
+    // This is a dummy address that spells KUTHULU in hex ;)
+    let erc1155Test = await contractCustomToken.methods.balanceOfBatch(['0x000000000000000000000000004B555448554C55'],[0]).call()
+        .then(result => {
+            return 'ERC1155';
+        })
+        .catch(async err => {
+            console.log("ERROR1: ", err);
+            let erc20Test = await contractCustomToken.methods.decimals().call()
+                .then(result => {
+                    return 'ERC20';
+                })
+                .catch(async err => {
+                    console.log("ERROR2: ", err);
+                    let erc721Test = await contractCustomToken.methods.ownerOf(0).call()
+                        .then(result => {
+                            return 'ERC721';
+                        })
+                        .catch(async err => {
+                            console.log("ERROR3: ", err);
+                            return "unknown";
+                        });
+                    return erc721Test;
+                });
+            return erc20Test;
+        });
+    return erc1155Test;
+}
+
+
 async function groupMembership(groupID, method){
 
     if (groupID) {
@@ -2491,48 +2223,9 @@ async function groupMembership(groupID, method){
 
             startLoading('Updating Group Members...')
 
-            // Get current gas prices
-            const currentGasPrices = await getCurrentGasPrices();
-
-            const ethereum = window.ethereum;
-            const ethAccounts = await ethereum.request({
-                method: "eth_requestAccounts",
-            });
-            const provider = new ethers.providers.Web3Provider(ethereum)
-            const ethWalletAddress = ethAccounts[0]
-            const signer = provider.getSigner(ethWalletAddress)
-            const contractHandlesEther = new ethers.Contract(contractAddressGroups, abiGroups, signer)
-
             if (method === 'Add') {
-                const estimatedGasLimit = await contractHandlesEther.estimateGas.addMemberToGroup(groupID, _wallet)
-                    .then(async (result) => {
-                        console.log('Gas Estimate: ', result.toString());
-                        return result;
-                    })
-                    .catch(async (err) => {
-                        console.log(err);
-                        let errResp = await catchError('estimateGas', err);
-                    });
 
-                // Build data manually
-                const abi = ethers.utils.defaultAbiCoder;
-                let params = abi.encode(
-                    ["uint256"],
-                    [ groupID ],
-                    ["address"],
-                    [ _wallet ]
-                ); // array to encode
-
-                const transaction = {
-                    "from": walletAddress,
-                    "data": params,
-                    "gas": estimatedGasLimit,
-                    "gasLimit": estimatedGasLimit,
-                    "gasPrice": web3.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
-                    "chainId": chainIDRaw
-                };
-
-                let resp = await contractGroupsPub.methods.addMemberToGroup(groupID, _wallet).send(transaction)
+                let resp = await contractGroupsPub.methods.addMemberToGroup(groupID, _wallet).send({from: walletAddress})
                     .then(async (result) => {
                         console.log('Update Results: ', result);
 
@@ -2544,34 +2237,8 @@ async function groupMembership(groupID, method){
                         let errResp = await catchError('addMemberToGroup', err);
                     });
             } else if (method === 'Remove'){
-                const estimatedGasLimit = await contractHandlesEther.estimateGas.removeMemberFromGroup(groupID, _wallet)
-                    .then(async (result) => {
-                        console.log('Gas Estimate: ', result.toString());
-                        return result;
-                    })
-                    .catch(async (err) => {
-                        let errResp = await catchError('estimateGas', err);
-                    });
 
-                // Build data manually
-                const abi = ethers.utils.defaultAbiCoder;
-                let params = abi.encode(
-                    ["uint256"],
-                    [ groupID ],
-                    ["address"],
-                    [ _wallet ]
-                ); // array to encode
-
-                const transaction = {
-                    "from": walletAddress,
-                    "data": params,
-                    "gas": estimatedGasLimit,
-                    "gasLimit": estimatedGasLimit,
-                    "gasPrice": web3.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
-                    "chainId": chainIDRaw
-                };
-
-                let resp = await contractGroupsPub.methods.removeMemberFromGroup(groupID, _wallet).send(transaction)
+                let resp = await contractGroupsPub.methods.removeMemberFromGroup(groupID, _wallet).send({from: walletAddress})
                     .then(async (result) => {
                         console.log('Update Results: ', result);
 
@@ -2585,7 +2252,6 @@ async function groupMembership(groupID, method){
             }
         }
     }
-    
 }
 
 
@@ -2598,49 +2264,9 @@ async function lockGroup(groupID, method){
 
             startLoading('Updating Token Multi-Sig Lock...')
 
-            // Get current gas prices
-            const currentGasPrices = await getCurrentGasPrices();
-
-            const ethereum = window.ethereum;
-            const ethAccounts = await ethereum.request({
-                method: "eth_requestAccounts",
-            });
-            const provider = new ethers.providers.Web3Provider(ethereum)
-            const ethWalletAddress = ethAccounts[0]
-            const signer = provider.getSigner(ethWalletAddress)
-            const contractMultiLock = new ethers.Contract(contractAddressGroupsTokens, abiGroupTokens, signer)
-
             if (method === 'Add') {
 
-                const estimatedGasLimit = await contractMultiLock.estimateGas.addMultiSigLock(groupID, _wallet)
-                    .then(async (result) => {
-                        console.log('Gas Estimate: ', result.toString());
-                        return result;
-                    })
-                    .catch(async (err) => {
-                        console.log(err);
-                        let errResp = await catchError('estimateGas', err);
-                    });
-
-                // Build data manually
-                const abi = ethers.utils.defaultAbiCoder;
-                let params = abi.encode(
-                    ["uint256"],
-                    [ groupID ],
-                    ["address"],
-                    [ _wallet ]
-                ); // array to encode
-
-                const transaction = {
-                    "from": walletAddress,
-                    "data": params,
-                    "gas": estimatedGasLimit,
-                    "gasLimit": estimatedGasLimit,
-                    "gasPrice": web3.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
-                    "chainId": chainIDRaw
-                };
-
-                let resp = await contractGroupTokensPub.methods.addMultiSigLock(groupID, _wallet).send(transaction)
+                let resp = await contractGroupTokensPub.methods.addMultiSigLock(groupID, _wallet).send({from: walletAddress})
                     .then(async (result) => {
                         console.log('Add Multi-Sig Results: ', result);
 
@@ -2654,85 +2280,50 @@ async function lockGroup(groupID, method){
                         let errResp = await catchError('addMemberToGroup', err);
                     });
             } else if (method === 'Remove'){
-                const estimatedGasLimit = await contractMultiLock.estimateGas.removeMultiSigLock(groupID)
-                    .then(async (result) => {
-                        console.log('Gas Estimate: ', result.toString());
-                        return result;
-                    })
-                    .catch(async (err) => {
-                        let errResp = await catchError('estimateGas', err);
-                    });
 
-                // Build data manually
-                const abi = ethers.utils.defaultAbiCoder;
-                let params = abi.encode(
-                    ["uint256"],
-                    [ groupID ]
-                ); // array to encode
-
-                const transaction = {
-                    "from": walletAddress,
-                    "data": params,
-                    "gas": estimatedGasLimit,
-                    "gasLimit": estimatedGasLimit,
-                    "gasPrice": web3.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
-                    "chainId": chainIDRaw
-                };
-
-                let resp = await contractGroupTokensPub.methods.removeMultiSigLock(groupID).send(transaction)
+                let resp = await contractGroupTokensPub.methods.removeMultiSigLock(groupID).send({from: walletAddress})
                     .then(async (result) => {
                         console.log('Remove Multi-Sig: ', result);
 
-                        $('#statusMsg').html('<span class="gameFont errorText" id="errorText">Multi-Sig Address Removed</span>');
-
-                        endLoading();
-
-                        return result;
+                        window.location.reload();
                     })
                     .catch(async (err) => {
                         let errResp = await catchError('removeMemberFromGroup', err);
                     });
             } else if (method === 'Activate') {
-                const estimatedGasLimit = await contractMultiLock.estimateGas.activateMultiSigLock(groupID)
-                    .then(async (result) => {
-                        console.log('Gas Estimate: ', result.toString());
-                        return result;
-                    })
-                    .catch(async (err) => {
-                        let errResp = await catchError('estimateGas', err);
-                    });
 
-                // Build data manually
-                const abi = ethers.utils.defaultAbiCoder;
-                let params = abi.encode(
-                    ["uint256"],
-                    [groupID]
-                ); // array to encode
-
-                const transaction = {
-                    "from": walletAddress,
-                    "data": params,
-                    "gas": estimatedGasLimit,
-                    "gasLimit": estimatedGasLimit,
-                    "gasPrice": web3.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
-                    "chainId": chainIDRaw
-                };
-
-                let resp = await contractGroupTokensPub.methods.activateMultiSigLock(groupID).send(transaction)
+                let resp = await contractGroupTokensPub.methods.activateMultiSigLock(groupID).send({from: walletAddress})
                     .then(async (result) => {
                         console.log('Activate Multi-Sig Results: ', result);
 
-                        $('#statusMsg').html('<span class="gameFont errorText" id="errorText">Multi-Sig Activated</span>');
-
-                        endLoading();
-
-                        return result;
+                        window.location.reload();
                     })
                     .catch(async (err) => {
                         let errResp = await catchError('removeMemberFromGroup', err);
                     });
             }
         }
+    }
+
+}
+
+async function leaveGroup(groupID){
+
+    if (groupID) {
+
+        startLoading('Leaving Group...')
+
+        let resp = await contractGroupsPub.methods.leaveGroup(groupID).send({from: walletAddress})
+            .then(async (result) => {
+                console.log('Leave Group Results: ', result);
+
+                endLoading();
+
+                $('#statusMsg').html('<span class="gameFont errorText" id="errorText">You are no longer a member of the group.</span>');
+            })
+            .catch(async (err) => {
+                let errResp = await catchError('leaveGroup', err);
+            });
     }
 
 }
@@ -2768,7 +2359,7 @@ async function getGroupsByOwner(userAddress){
             let groupDetails = await contractGroups.methods.groupDetails(groupID).call()
                 .then(result => {
                     // console.log('Group Details: ', result);
-                    if (result.groupAddress !== '0x0000000000000000000000000000000000000000'){
+                    if (result.groupAddress !== nullAddress){
                         return result;
                     } else {
                         return '';
@@ -2809,7 +2400,7 @@ async function getGroupsByMember(userAddress){
             let groupDetails = await contractGroups.methods.groupDetails(allGroupIDs[g]).call()
                 .then(result => {
                     // console.log('Group Details: ', result);
-                    if (result.groupAddress !== '0x0000000000000000000000000000000000000000'){
+                    if (result.groupAddress !== nullAddress){
                         return result;
                     } else {
                         return '';
@@ -2946,30 +2537,7 @@ async function updateHandle(){
     if (validWalletConnection) {
         let handle = $('#handle').val();
 
-        startLoading('Updating Handle...')
-
-        console.log('handle: ', handle);
-
-
-        // Check DOOM Allowance
-        let allowance = await contractKUTHULUTokens.methods.allowance(walletAddress, contractAddressHandles).call()
-            .then(result => {
-                console.log('Allowance:' + result);
-                return result;
-            })
-            .catch(err => {
-                catchError('getDOOMBalance2', err);
-            });
-
-
-        if (parseInt(allowance) === 0 && userDOOMBalance > costToUpdateHandle){
-            $('#postit').hide();
-            $('#approveit').show();
-        } else if (userDOOMBalance < costToPost){
-            $('#postit').hide();
-            $('#buyIt').show();
-        }
-
+        startLoading('Updating Handle...');
 
         // check if it's taken first
         let checkHandle = await contractHandles.methods.checkIfAvailable(handle).call()
@@ -2982,60 +2550,34 @@ async function updateHandle(){
             });
 
         if (!checkHandle){
-            $('#statusMsg').html('<span class="gameFont errorText bad">That handle is already in use!</span>');
+            $('#statusMsg').html('<span class="gameFont errorText">That handle is already in use!</span>');
             endLoading();
             return;
         }
 
-        // Get current gas prices
-        const currentGasPrices = await getCurrentGasPrices();
-
-        const ethereum = window.ethereum;
-        const ethAccounts = await ethereum.request({
-            method: "eth_requestAccounts",
-        });
-        const provider = new ethers.providers.Web3Provider(ethereum)
-        const ethWalletAddress = ethAccounts[0]
-        const signer = provider.getSigner(ethWalletAddress)
-        const contractHandlesEther = new ethers.Contract(contractAddressHandles, abiHandles, signer)
-
-        const estimatedGasLimit = await contractHandlesEther.estimateGas.updateUserHandle(handle)
-            .then(async (result) => {
-                console.log('Gas Estimate: ', result.toString());
+        // Check DOOM Allowance
+        let allowance = await contractKUTHULUTokens.methods.allowance(walletAddress, contractAddressHandles).call()
+            .then(result => {
+                console.log('Allowance:' + result);
                 return result;
             })
-            .catch(async (err) => {
-                let errResp = await catchError('estimateGas', err);
+            .catch(err => {
+                catchError('getDOOMBalance2', err);
             });
 
-        // Build data manually
-        const abi = ethers.utils.defaultAbiCoder;
-        let params = abi.encode(
-            ["string"],
-            [ handle ]
-        ); // array to encode
+        if (parseInt(allowance) === 0 && parseInt(userDOOMBalance) > parseInt(costToUpdateHandle)){
+            $('#statusMsg').html('<span class="gameFont errorText">You will have 2 transactions. 1 to approve &amp; 1 to update.</span>');
+            let approval = await approve(contractAddressHandles);
+        } else if (userDOOMBalance < costToPost){
+            $('#postit').hide();
+            $('#buyIt').show();
+        }
 
-
-        const transaction = {
-            "from": walletAddress,
-            "data": params,
-            "gas": estimatedGasLimit,
-            "gasLimit": estimatedGasLimit,
-            "gasPrice": web3.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
-            "chainId": chainIDRaw
-        };
-
-        console.log('TRANSACTION: ', transaction);
-
-        let resp = await contractHandlesPub.methods.updateUserHandle(handle).send(transaction)
+        let resp = await contractHandlesPub.methods.updateUserHandle(handle).send({from: walletAddress})
             .then(async (result) => {
                 console.log('Update Results: ', result);
 
-                $('#statusMsg').html('<span class="gameFont errorText">Handle Updated!</span>');
-
-                endLoading();
-
-                // window.location.reload();
+                window.location.reload();
 
                 return result;
             })
@@ -3053,58 +2595,47 @@ async function updateHandle(){
 async function setNFTAvatar(groupID){
     if (validWalletConnection) {
 
-        let tokenContract = $('#tokenContract').val();
+        startLoading('Updating Avatar to NFT...')
+
+        let tokenContract = $('#avatarTokenContract').val();
         let tokenID = $('#tokenID').val();
 
-        // Get current gas prices
-        const currentGasPrices = await getCurrentGasPrices();
-
-        const ethereum = window.ethereum;
-        const ethAccounts = await ethereum.request({
-            method: "eth_requestAccounts",
-        });
-        const provider = new ethers.providers.Web3Provider(ethereum)
-        const ethWalletAddress = ethAccounts[0]
-        const signer = provider.getSigner(ethWalletAddress)
-        const contractProfilesEther = new ethers.Contract(contractAddressProfiles, abiProfiles, signer)
-
-        const estimatedGasLimit = await contractProfilesEther.estimateGas.setNFTAsAvatar(tokenContract.toString(), tokenID.toString(), groupID.toString())
-            .then(async (result) => {
-                console.log('Gas Estimate: ', result.toString());
-                return result;
-            })
-            .catch(async (err) => {
-                let errResp = await catchError('estimateGas', err);
-            });
-
-        // Build data manually
-        const abi = ethers.utils.defaultAbiCoder;
-        let params = abi.encode(
-            ["address"],
-            [ tokenContract ],
-            ["uint256"],
-            [ tokenID ],
-            ["uint256"],
-            [ groupID ]
-        ); // array to encode
-
-
-        const transaction = {
-            "from": walletAddress,
-            "data": params,
-            "gas": estimatedGasLimit,
-            "gasLimit": estimatedGasLimit,
-            "gasPrice": web3.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
-            "chainId": chainIDRaw
-        };
-
-        console.log('TRANSACTION: ', transaction);
-
-        let resp = await contractProfilesPub.methods.setNFTAsAvatar(tokenContract.toString(), tokenID.toString(), groupID.toString()).send(transaction)
+        let resp = await contractProfilesPub.methods.setNFTAsAvatar(tokenContract.toString(), tokenID.toString(), groupID.toString()).send({from: walletAddress})
             .then(async (result) => {
                 console.log('Update Results: ', result);
 
-                $('#statusMsg').html('<span class="gameFont errorText">Avatar set as NFT!</span>');
+                window.location.reload();
+
+                return result;
+            })
+            .catch(async (err) => {
+                let errResp = await catchError('setNFTAsAvatar', err);
+            });
+
+    } else {
+        console.log("invalid wallet connection");
+        resetUI();
+    }
+}
+
+async function setNFTWhitelist(groupID, reset){
+    if (validWalletConnection) {
+
+        startLoading('Updating NFT Whitelist...')
+
+        let tokenContract = $('#nftTokenContract').val();
+        let minAmount = $('#minTokens').val();
+
+        if (reset){
+            tokenContract = nullAddress;
+            minAmount = 0;
+        }
+
+        let resp = await contractBlockingPub.methods.updateNFTReq(tokenContract.toString(), minAmount.toString(), groupID.toString()).send({from: walletAddress})
+            .then(async (result) => {
+                console.log('Update Results: ', result);
+
+                $('#statusMsg').html('<span class="gameFont errorText">NFT Whitelisting Enabled!</span>');
 
                 endLoading();
 
@@ -3113,7 +2644,7 @@ async function setNFTAvatar(groupID){
                 return result;
             })
             .catch(async (err) => {
-                let errResp = await catchError('setNFTAsAvatar', err);
+                let errResp = await catchError('updateNFTReq', err);
             });
 
     } else {
@@ -3137,61 +2668,13 @@ async function updateProfile(){
             groupID = 0;
         }
 
-        // console.log('GroupID: ', groupID);
-        // console.log('location: ', location);
-        // console.log('avatar: ', avatar);
-        // console.log('uri: ', uri);
-        // console.log('bio: ', bio);
+        console.log('GroupID: ', groupID);
+        console.log('location: ', location);
+        console.log('avatar: ', avatar);
+        console.log('uri: ', uri);
+        console.log('bio: ', bio);
 
-        // Get current gas prices
-        const currentGasPrices = await getCurrentGasPrices();
-
-        const ethereum = window.ethereum;
-        const ethAccounts = await ethereum.request({
-            method: "eth_requestAccounts",
-        });
-        const provider = new ethers.providers.Web3Provider(ethereum)
-        const ethWalletAddress = ethAccounts[0]
-        const signer = provider.getSigner(ethWalletAddress)
-        const contractProfilesEther = new ethers.Contract(contractAddressProfiles, abiProfiles, signer)
-
-        const estimatedGasLimit = await contractProfilesEther.estimateGas.updateProfile(location, avatar, uri, bio, groupID)
-            .then(async (result) => {
-                console.log('Gas Estimate: ', result.toString());
-                return result;
-            })
-            .catch(async (err) => {
-                let errResp = await catchError('estimateGas', err);
-            });
-
-        // Build data manually
-        const abi = ethers.utils.defaultAbiCoder;
-        let params = abi.encode(
-            ["string"],
-            [ location ],
-            ["string"],
-            [ avatar ],
-            ["string"], // encode as address array
-            [ uri ],
-            ["string"],
-            [ bio ],
-            ["uint256"],
-            [ groupID ]
-        ); // array to encode
-
-
-        const transaction = {
-            "from": walletAddress,
-            "data": params,
-            "gas": estimatedGasLimit,
-            "gasLimit": estimatedGasLimit,
-            "gasPrice": web3.utils.toHex(Math.trunc(currentGasPrices.medium * 1e9)),
-            "chainId": chainIDRaw
-        };
-
-        console.log('TRANSACTION: ', transaction);
-
-        let resp = await contractProfilesPub.methods.updateProfile(location, avatar, uri, bio, groupID).send(transaction)
+        let resp = await contractProfilesPub.methods.updateProfile(location, avatar, uri, bio, groupID).send({from: walletAddress})
             .then(async (result) => {
                 console.log('Update Results: ', result);
 
@@ -3223,7 +2706,7 @@ async function makePost(p, skipRepost, isComment){
     }
 
     let isGroup = false;
-    if (p.postProxy !== '0x0000000000000000000000000000000000000000' && p.postProxy !== p.poster) {
+    if (p.postProxy !== nullAddress && p.postProxy !== p.poster) {
         isGroup = true;
     }
 
@@ -3346,7 +2829,7 @@ async function makePost(p, skipRepost, isComment){
             // Get the group name
             let groupDetails = await contractGroups.methods.groupDetails(inGroups[g]).call()
                 .then(result => {
-                    if (result.groupAddress !== '0x0000000000000000000000000000000000000000'){
+                    if (result.groupAddress !== nullAddress){
                         return result;
                     } else {
                         return '';
@@ -3355,8 +2838,6 @@ async function makePost(p, skipRepost, isComment){
                 .catch(err => {
                     catchError('groupDetails', err);
                 });
-
-            console.log("🔥 Group Details: ", groupDetails);
 
             // Populate the address
             groupAddresses.push(groupDetails.groupAddress);
@@ -3386,7 +2867,6 @@ async function makePost(p, skipRepost, isComment){
             if (groups) {
                 if (g + 1 <= groups.length) {
                     let re = new RegExp(groups[g],"gi");
-                    console.log("🔥 GROUP ADDERSSSSSS: ",  groupAddresses[g])
                     p.message = p.message.replace(re, '<a href="?address=' + groupAddresses[g] + '">' + groups[g] + '</a>');
                 }
             }
@@ -3437,7 +2917,7 @@ async function makePost(p, skipRepost, isComment){
         //                 .catch(err => {
         //                     catchError('usrHandleMap', err);
         //                 });
-        //             if (taggedUserAddress !== '0x0000000000000000000000000000000000000000') {
+        //             if (taggedUserAddress !== nullAddress) {
         //                 let re = new RegExp('@' + taggedUser[t],"gi");
         //                 p.message = p.message.replace(re, '<a href="?address=' + taggedUserAddress + '&tagged=1" title="' + taggedAddress[t] + '">' + thisUserHandle + '</a>');
         //             }
@@ -3830,7 +3310,6 @@ function makeShortAddress(address){
 }
 
 function resetUI(){
-    $('#playButtons').hide();
     $('#connectWalletToPost').hide();
 }
 
@@ -3856,6 +3335,197 @@ function endLoading(){
 async function lookupENSName(address){
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     return await provider.lookupAddress(address);
+}
+
+function addNameToCache(address, name){
+    // COnly add if it's not already there
+    if (!nameCache.hasOwnProperty(address)){
+        nameCache[address] = name;
+    }
+}
+
+async function getHandle(address, makeShort){
+
+    // Check if it's in the cache first
+    if (nameCache.hasOwnProperty(address)){
+        return nameCache[address];
+    }
+
+    let userProfile = await getProfileData(address, false);
+    console.log(userProfile);
+    if (userProfile.handle){
+        addNameToCache(address, userProfile.handle);
+        return userProfile.handle;
+    } else {
+        if (makeShort){
+            return makeShortAddress(address);
+        } else {
+            return address;
+        }
+    }
+}
+
+async function getProfileData(address){
+
+    let userProfile = await contractProfiles.methods.getUserDetails(address).call()
+        .then(result => {
+            // Save the name to cache for quicker lookups later
+            addNameToCache(address, result[0]);
+
+            result = result.toString().replace('base64,','base64;');
+            return formatUserProfileToJSON(result.toString().split(','));
+        })
+        .catch(err => {
+            catchError('getUserDetails', err);
+        });
+
+    let nftProfile = await getProfileImageFromNFT(userProfile.avatarMetadata , userProfile.avatarContract, address, userProfile.groupID);
+
+    let profileImage = userProfile.avatarURI;
+
+    if (nftProfile && nftProfile.length > 0){
+        profileImage = nftProfile;
+    }
+
+    if (profileImage === ''){
+        profileImage = 'images/user.png';
+    }
+
+    userProfile.profileImage = profileImage;
+
+    return userProfile;
+
+}
+
+
+async function validateERC20Contract(tokenContract, amount){
+
+    if (tokenContract === 'MATIC'){
+        if (parseFloat(userMATICBalance / ethDec) >= amount){
+            return 2;
+        } else {
+            return 0;
+        }
+    }
+
+    // Get their Custom Token Balance
+    let abiCustomTokens = [{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"remaining","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}];
+    let contractCustomToken = new web3inf.eth.Contract(abiCustomTokens, tokenContract);
+    console.log("wallet address: ", walletAddress);
+    let tokenBalance = await contractCustomToken.methods.balanceOf(walletAddress).call()
+        .then(result => {
+            console.log('Result:' + result);
+            if (result > 0) {
+                result = parseFloat(result / ethDec);
+            }
+            return result;
+        })
+        .catch(err => {
+            console.log('Error getting balance:', err);
+            return false;
+        });
+
+    if (!tokenBalance) {
+        return -1;
+    }
+
+    console.log('Amount Needed: ', amount);
+    console.log('Custom Token Balance: ', parseFloat(tokenBalance));
+
+    // Check Custom Token Allowance
+    let allowance = await contractCustomToken.methods.allowance(walletAddress, contractAddress).call()
+        .then(result => {
+            console.log('Allowance:' + result);
+            if (result > 0) {
+                result = parseFloat(result / ethDec);
+            }
+            return result;
+        })
+        .catch(err => {
+            console.log('Error getting allowance:', err);
+            return false;
+        });
+
+    if (!allowance) {
+        console.log('Failed to get allowance');
+        return 0;
+    }
+
+    if (allowance >= amount && tokenBalance >= amount) {
+        // They have the balance and allowance
+        console.log('Have Balance + Allowance');
+        return 2;
+    } else if (tokenBalance >= amount) {
+        console.log('Have Balance / No Allowance');
+        // They have the balance, but not the allowance
+        return 1;
+    } else {
+        console.log('No Balance');
+        // They don't have the balance (so the allowance doesn't matter)
+        return 0;
+    }
+}
+
+async function validateERC20(tokenContract, amount){
+    return await validateERC20Contract(tokenContract, amount);
+}
+
+async function catchError(func, err, skipLoadings, type){
+    if (!skipLoadings) {
+        endLoading();
+    }
+
+    console.log('ERROR: ', err);
+
+    let errMsg = 'Something did\'t go as planned :/ <br> Please refresh and try again.';
+    if (err.message !== undefined || err.code !== undefined) {
+        if (err.message !== undefined && err.code === undefined) {
+            if (err.message.indexOf('User denied transaction signature') >= 0) {
+                errMsg = 'You canceled the transaction.';
+            } else if (err.message.indexOf('Transaction has been reverted') >= 0) {
+
+                console.log(err.message);
+                let txHash = err.message.split('transactionHash": "')[1].split('"')[0];
+
+                let errTx = await $.get('https://api.tenderly.co/api/v1/public-contract/' + validNetworkID + '/tx/' + txHash, {"headers": {"X-Access-Key": "nSABfrE2L1nWFmCa2-nHm-T-1obKW0R-"}});
+                console.log(errTx);
+
+                errMsg = "<a href='" + txScanURLPrefix + "/tx/" + txHash + "' target='_blank'>" + errTx.error_message + "</a>";
+
+            } else if (err.message.indexOf('RPC') >= 0){
+                console.log('RPC Error: ', err.message);
+            } else {
+                console.log(err.message, func);
+                errMsg = err.message;
+            }
+        } else if (err.code !== undefined) {
+            if (err.code === -32005) {
+                console.log('MM Timeout ', func)
+                errMsg = "MetaMask was unable to reach the blockchain (rate limiting)<br /> Please try again in a few seconds.";
+            } else if (err.code === -32603) {
+                console.log('MM RPC Error ', func);
+                if (err.data.message.toLowerCase().indexOf('execution reverted') >= 0) {
+                    errMsg = err.data.message.replace('execution reverted: ','');
+                }
+            } else if (err.code === 4001){
+                console.log('User Canceled Transaction', func);
+                errMsg = "Transaction rejected! Why? Did I do something wrong? Is it me? I'm sorry...🥺";
+            } else {
+                console.log(err.message, func);
+                errMsg = '1 - ' + err.code + ' : ' + func;
+            }
+        }else{
+            console.log(err.message, func);
+            errMsg = '2 - ' + err.message + ' : ' + func;
+        }
+    } else {
+        console.log(err.message, func);
+        errMsg = err ;
+    }
+
+
+    console.log('Error Func: ' + func);
+    $('#statusMsg').html('<span class="gameFont" id="errorText">' + errMsg + '</span>');
 }
 
 function formatMsgRespToJSON(_resp){
@@ -3980,138 +3650,4 @@ function formatUserProfileToJSON(_resp){
     respJSON.groupID = _resp[18];
 
     return respJSON;
-}
-
-function addNameToCache(address, name){
-    // COnly add if it's not already there
-    if (!nameCache.hasOwnProperty(address)){
-        nameCache[address] = name;
-    }
-}
-
-async function getHandle(address, makeShort){
-
-    // Check if it's in the cache first
-    if (nameCache.hasOwnProperty(address)){
-        return nameCache[address];
-    }
-
-    let userProfile = await getProfileData(address, false);
-    console.log(userProfile);
-    if (userProfile.handle){
-        addNameToCache(address, userProfile.handle);
-        return userProfile.handle;
-    } else {
-        if (makeShort){
-            return makeShortAddress(address);
-        } else {
-            return address;
-        }
-    }
-}
-
-async function getProfileData(address){
-
-    let userProfile = await contractProfiles.methods.getUserDetails(address).call()
-        .then(result => {
-            // Save the name to cache for quicker lookups later
-            addNameToCache(address, result[0]);
-
-            result = result.toString().replace('base64,','base64;');
-            return formatUserProfileToJSON(result.toString().split(','));
-        })
-        .catch(err => {
-            catchError('getUserDetails', err);
-        });
-
-    let nftProfile = await getProfileImageFromNFT(userProfile.avatarMetadata , userProfile.avatarContract, address, userProfile.groupID);
-
-    let profileImage = userProfile.avatarURI;
-
-    if (nftProfile && nftProfile.length > 0){
-        profileImage = nftProfile;
-    }
-
-    if (profileImage === ''){
-        profileImage = 'images/user.png';
-    }
-
-    userProfile.profileImage = profileImage;
-
-    return userProfile;
-
-}
-
-// 0x2ECF9Ff1B7e1139C4adB521C034CD2874B8bc396
-
-async function validateERC20Contract(tokenContract, amount){
-
-    if (tokenContract === 'MATIC'){
-        if (parseFloat(userMATICBalance / ethDec) >= amount){
-            return 2;
-        } else {
-            return 0;
-        }
-    }
-
-    // Get their Custom Token Balance
-    let abiCustomTokens = [{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"remaining","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}];
-    let contractCustomToken = new web3inf.eth.Contract(abiCustomTokens, tokenContract);
-    console.log("wallet address: ", walletAddress);
-    let tokenBalance = await contractCustomToken.methods.balanceOf(walletAddress).call()
-        .then(result => {
-            console.log('Result:' + result);
-            if (result > 0) {
-                result = parseFloat(result / ethDec);
-            }
-            return result;
-        })
-        .catch(err => {
-            console.log('Error getting balance:', err);
-            return false;
-        });
-
-    if (!tokenBalance) {
-        return -1;
-    }
-
-    console.log('Amount Needed: ', amount);
-    console.log('Custom Token Balance: ', parseFloat(tokenBalance));
-
-    // Check Custom Token Allowance
-    let allowance = await contractCustomToken.methods.allowance(walletAddress, contractAddress).call()
-        .then(result => {
-            console.log('Allowance:' + result);
-            if (result > 0) {
-                result = parseFloat(result / ethDec);
-            }
-            return result;
-        })
-        .catch(err => {
-            console.log('Error getting allowance:', err);
-            return false;
-        });
-
-    if (!allowance) {
-        console.log('Failed to get allowance');
-        return 0;
-    }
-
-    if (allowance >= amount && tokenBalance >= amount) {
-        // They have the balance and allowance
-        console.log('Have Balance + Allowance');
-        return 2;
-    } else if (tokenBalance >= amount) {
-        console.log('Have Balance / No Allowance');
-        // They have the balance, but not the allowance
-        return 1;
-    } else {
-        console.log('No Balance');
-        // They don't have the balance (so the allowance doesn't matter)
-        return 0;
-    }
-}
-
-async function validateERC20(tokenContract, amount){
-    return await validateERC20Contract(tokenContract, amount);
 }
