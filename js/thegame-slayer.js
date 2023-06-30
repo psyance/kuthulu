@@ -65,6 +65,7 @@ let contractAddressKultists = '0x1417984f4CC5d04F07b854090c8B9e4BC957BD6A';
 let contractAddressRaffleTix = '0xEb240D9DDc9482D3d2BFc75b708BB059ca7188f1';
 let contractAddressSOULS = '0xb56225303810e66c71a404DD262B198a0db61f71';
 // let contractAddressRewards = '0x540d3B9214C2552dE2E7A3d0907034550BADea98';
+let contractAddressBadges = '0xf9E040CAFA95e0aaEDA6569C7B91f7dAeABDDB8F';
 // let contractAddressSampleContractHook = '0x5AF1d48Db17A6026929041Df8C3Cc30f19803B55';
 
 
@@ -83,6 +84,7 @@ const abiBlocking = [{"inputs":[],"stateMutability":"nonpayable","type":"constru
 const abiTagged = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint8","name":"version","type":"uint8"}],"name":"Initialized","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"msgID","type":"uint256"},{"indexed":true,"internalType":"address","name":"taggedAccount","type":"address"}],"name":"logAddTag","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"msgID","type":"uint256"},{"indexed":true,"internalType":"address","name":"untaggedAccount","type":"address"}],"name":"logRemoveTag","type":"event"},{"inputs":[],"name":"KUtils","outputs":[{"internalType":"contract IKUtils","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"msgID","type":"uint256"},{"internalType":"address[]","name":"addressesTagged","type":"address[]"}],"name":"addTags","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"admins","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"usrAddress","type":"address"},{"internalType":"uint256","name":"startFrom","type":"uint256"}],"name":"getTaggedMsgIDs","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_kutils","type":"address"},{"internalType":"uint256","name":"_maxItemsReturn","type":"uint256"},{"internalType":"uint256","name":"_maxItemsPerBucket","type":"uint256"},{"internalType":"uint256","name":"_maxTaggedAccounts","type":"uint256"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"maxItemsPerBucket","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"maxItemsReturn","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"maxTaggedAccounts","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"pause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"msgID","type":"uint256"},{"internalType":"address[]","name":"addressesTagged","type":"address[]"}],"name":"removeTags","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"","type":"string"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"taggedMap","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"","type":"string"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"taggedMapMap","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unpause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"admin","type":"address"},{"internalType":"bool","name":"status","type":"bool"}],"name":"updateAdmin","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_kutils","type":"address"},{"internalType":"uint256","name":"_maxTaggedAccounts","type":"uint256"}],"name":"updateDetails","outputs":[],"stateMutability":"nonpayable","type":"function"}];
 const abiHashtags = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint8","name":"version","type":"uint8"}],"name":"Initialized","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"string","name":"hashtags","type":"string"},{"indexed":true,"internalType":"uint256","name":"msgID","type":"uint256"}],"name":"logAddHashtag","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"string","name":"hashtags","type":"string"},{"indexed":true,"internalType":"uint256","name":"msgID","type":"uint256"}],"name":"logRemoveHashtag","type":"event"},{"inputs":[],"name":"KUtils","outputs":[{"internalType":"contract IKUtils","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"msgID","type":"uint256"},{"internalType":"string[]","name":"hashtagsToToggle","type":"string[]"}],"name":"addHashtags","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"admins","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"hashtag","type":"string"},{"internalType":"uint256","name":"startFrom","type":"uint256"}],"name":"getMsgIDsFromHashtag","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"","type":"string"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"hashtagMap","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"","type":"string"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"hashtagMapMap","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_kutils","type":"address"},{"internalType":"uint256","name":"_maxItemsReturn","type":"uint256"},{"internalType":"uint256","name":"_maxItemsPerBucket","type":"uint256"},{"internalType":"uint256","name":"_maxHashtagLength","type":"uint256"},{"internalType":"uint256","name":"_minHashtagLength","type":"uint256"},{"internalType":"uint256","name":"_maxHashtags","type":"uint256"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"maxHashtagLength","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"maxHashtags","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"maxItemsPerBucket","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"maxItemsReturn","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"minHashtagLength","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"pause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"msgID","type":"uint256"},{"internalType":"string[]","name":"hashtagsToToggle","type":"string[]"}],"name":"removeHashtags","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unpause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"admin","type":"address"},{"internalType":"bool","name":"status","type":"bool"}],"name":"updateAdmin","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_kutils","type":"address"},{"internalType":"uint256","name":"_maxHashtags","type":"uint256"}],"name":"updateDetails","outputs":[],"stateMutability":"nonpayable","type":"function"}];
 const abiRaffleTickets = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint8","name":"version","type":"uint8"}],"name":"Initialized","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"logClaimToken","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"logMintToken","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"multiSig","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"logTokenLocked","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"logTokenUnlocked","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address[]","name":"users","type":"address[]"},{"indexed":true,"internalType":"uint256","name":"quantity","type":"uint256"}],"name":"logUpdateClaimable","type":"event"},{"inputs":[{"internalType":"uint256","name":"tokenID","type":"uint256"}],"name":"activateMultiSigLock","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenID","type":"uint256"},{"internalType":"address","name":"multiSigAddress","type":"address"}],"name":"addMultiSigLock","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"admins","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address[]","name":"users","type":"address[]"},{"internalType":"uint256","name":"quantity","type":"uint256"}],"name":"awardTix","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"checkTix","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"claimTix","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"costToMint","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenID","type":"uint256"}],"name":"getMultiSigAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getWhaleSizes","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"level","type":"uint256"}],"name":"getWhales","outputs":[{"internalType":"address[]","name":"","type":"address[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"cost","type":"uint256"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"isOperator","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenID","type":"uint256"}],"name":"isMultiSigLocked","outputs":[{"internalType":"bool[2]","name":"","type":"bool[2]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"quantity","type":"uint256"}],"name":"mintTix","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"minted","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"pause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenID","type":"uint256"}],"name":"removeMultiSigLock","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"bool","name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_newVault","type":"address"}],"name":"setVaultAddress","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes4","name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"tixBaseURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenOfOwnerByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenID","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unpause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"admin","type":"address"},{"internalType":"bool","name":"status","type":"bool"}],"name":"updateAdmin","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tixCost","type":"uint256"},{"internalType":"uint256","name":"_maxToClaim","type":"uint256"},{"internalType":"string","name":"_tixBaseURI","type":"string"}],"name":"updateDetails","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"vaultAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"whaleSizes","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"}];
+const abiBadges = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint8","name":"version","type":"uint8"}],"name":"Initialized","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"string","name":"badgeName","type":"string"},{"indexed":false,"internalType":"string","name":"badgeURL","type":"string"},{"indexed":true,"internalType":"address","name":"allowedAddress","type":"address"}],"name":"addBadgeToApp","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"addedBy","type":"address"},{"indexed":true,"internalType":"uint256","name":"badgeID","type":"uint256"},{"indexed":true,"internalType":"address","name":"userAddress","type":"address"}],"name":"addToUser","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"badgeID","type":"uint256"}],"name":"removeBadgeFromApp","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"removedBy","type":"address"},{"indexed":true,"internalType":"uint256","name":"badgeID","type":"uint256"},{"indexed":true,"internalType":"address","name":"userAddress","type":"address"}],"name":"removeFromUser","type":"event"},{"inputs":[],"name":"KUtils","outputs":[{"internalType":"contract IKUtils","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"badgeName","type":"string"},{"internalType":"string","name":"badgeURI","type":"string"},{"internalType":"address","name":"allowedAddress","type":"address"},{"internalType":"uint256","name":"minimumReq","type":"uint256"},{"internalType":"uint256","name":"badgeTypeID","type":"uint256"}],"name":"addBadge","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"userAddress","type":"address"},{"internalType":"uint256","name":"badgeID","type":"uint256"}],"name":"addBadgeToUser","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"badgeCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"badgeIDs","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"badgeID","type":"uint256"}],"name":"getBadgeDetails","outputs":[{"internalType":"string[]","name":"","type":"string[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"userAddress","type":"address"}],"name":"getUserBadges","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_kutils","type":"address"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"pause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"badgeID","type":"uint256"}],"name":"removeBadge","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"userAddress","type":"address"},{"internalType":"uint256","name":"badgeID","type":"uint256"}],"name":"removeBadgeFromUser","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unpause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"admin","type":"address"},{"internalType":"bool","name":"status","type":"bool"}],"name":"updateAdmin","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_kutils","type":"address"}],"name":"updateContracts","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"contractAddress","type":"address"},{"internalType":"bool","name":"status","type":"bool"}],"name":"updateTrustedContract","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"badgeID","type":"uint256"}],"name":"verifyBadge","outputs":[],"stateMutability":"nonpayable","type":"function"}];
 
 // Contract Interfaces
 let contractKUTHULU = new web3inf.eth.Contract(abiKUTHULU, contractAddress);
@@ -108,14 +110,16 @@ let contractTagged = new web3inf.eth.Contract(abiTagged, contractAddressTagged);
 let contractHashtags = new web3inf.eth.Contract(abiHashtags, contractAddressHashtags);
 let contractRaffleTix = new web3inf.eth.Contract(abiRaffleTickets, contractAddressRaffleTix);
 let contractRaffleTixPub = new web3.eth.Contract(abiRaffleTickets, contractAddressRaffleTix);
+let contractBadges = new web3inf.eth.Contract(abiBadges, contractAddressBadges);
 
 $('#contractLink').html('<a href="' + txScanURLPrefix + "/address/" + contractAddress + '" target="_blank" style="color:blue;">' + contractAddress + '</a>')
 
 $(".page-loader .loader").delay(0).fadeOut();
 $(".page-loader").delay(500).fadeOut("slow");
 
-let walletAddress;
 const ethDec = 1000000000000000000;
+
+let walletAddress;
 let walletChainID;
 
 let validWalletConnection = false;
@@ -306,7 +310,7 @@ async function checkWallet(attempt) {
                 // Get their DOOM Balance
                 userDOOMBalance = await contractKUTHULUTokens.methods.balanceOf(walletAddress).call()
                     .then(result => {
-                        return result;
+                        return parseInt(result);
                     })
                     .catch(err => {
                         catchError('getDOOMBalance', err);
@@ -315,6 +319,8 @@ async function checkWallet(attempt) {
 
                 console.log('MATIC Balance: ', userMATICBalance);
                 console.log('DOOM Balance: ', userDOOMBalance);
+
+                $('#doomBalance').html(userDOOMBalance / ethDec);
 
                 // Check DOOM Allowance
                 allowance = await contractKUTHULUTokens.methods.allowance(walletAddress, contractAddress).call()
@@ -481,6 +487,12 @@ async function connectToPolygon(m){
 
 async function postMsg() {
 
+    // Check to make sure they have enough DOOM to make the post
+    if (userDOOMBalance < costToPost) {
+        $('#statusMsg').html('<span class="gameFont errorText">You need <img src="images/token-DOOM.png" class="alertDOOM" />' + costToPost / ethDec + ' DOOM to post a message</span>');
+        return;
+    }
+
     if (validWalletConnection) {
 
         startLoading('Performing Magic...');
@@ -570,7 +582,7 @@ async function postMsg() {
 
         // Flip the groups to group IDs
         for (let i = 0; i < inGroups.length; i++) {
-            let inGroup = await contractGroupTokens.methods.getGroupID(inGroups[i]).call()
+            inGroups[i] = await contractGroupTokens.methods.getGroupID(inGroups[i]).call()
                 .then(result => {
                     console.log('In Group ID:' + result);
                     return result;
@@ -578,8 +590,6 @@ async function postMsg() {
                 .catch(err => {
                     catchError('inGroups getGroupID', err);
                 });
-
-            inGroups[i] = inGroup;
         }
 
         // Check to see if they're allowed to post into each group
@@ -714,10 +724,26 @@ const getCurrentGasPrices = async () => {
 
 async function mintGroup(){
 
-    startLoading('Minting Group...');
-
     // Get the group name
     let groupToMint = $('#groupToMint').val();
+
+    // Calculate the cost to mint a group
+    let costToMint = costToMintTier4;
+    if (groupToMint.length === 3){
+        costToMint = costToMintTier1;
+    } else if (groupToMint.length <= 5){
+        costToMint = costToMintTier2;
+    } else if (groupToMint.length <= 8){
+        costToMint = costToMintTier3;
+    }
+
+    // Check to make sure they have enough DOOM to mint the group
+    if (userDOOMBalance < costToMint) {
+        $('#statusMsg').html('<span class="gameFont errorText">You need <img src="images/token-DOOM.png" class="alertDOOM" />' + costToMint / ethDec + ' DOOM to mint this group</span>');
+        return;
+    }
+
+    startLoading('Minting Group...');
 
     // let letterNumber = /^[0-9a-zA-Z]+$/;
     // if (!groupToMint.match(letterNumber)){
@@ -753,18 +779,6 @@ async function mintGroup(){
         endLoading();
         return;
     }
-
-    // Calculate the cost to mint a group
-    let costToMint = costToMintTier4;
-    if (groupToMint.length === 3){
-        costToMint = costToMintTier1;
-    } else if (groupToMint.length <= 5){
-        costToMint = costToMintTier2;
-    } else if (groupToMint.length <= 8){
-        costToMint = costToMintTier3;
-    }
-
-    // costToMint += ethDec;
 
     if (userMATICBalance < costToMint){
         $('#statusMsg').html('<span class="gameFont" style="color: red;text-shadow: none;">You need ' + (parseFloat(costToMint) / ethDec) + ' MATIC to mint that group name</span>');
@@ -951,6 +965,13 @@ async function approveCustomContract(tokenContractAddress){
 }
 
 async function like(postID){
+
+    // Check to make sure they have enough DOOM to make the like
+    if (userDOOMBalance < costLike) {
+        $('#statusMsg').html('<span class="gameFont errorText">You need <img src="images/token-DOOM.png" class="alertDOOM" />' + costLike / ethDec + ' DOOM to like a post</span>');
+        return;
+    }
+
     if (validWalletConnection) {
 
         startLoading('Liking post...');
@@ -1741,6 +1762,7 @@ async function makeProfile(userAddress){
 
     let isAllowed = true;
 
+
     // Check if group multi-sig locked
     // 0 = Is Locked (True / False)
     // 1 = Has Address set for locking (True / False)
@@ -1782,7 +1804,10 @@ async function makeProfile(userAddress){
                 });
 
             if (isMultiSigLocked[0]){
-                multiSigDisplay = "<div id='multiSigAddress' class='muted good'>Multi-Sig Lock Address: " + multiSigAddress + '</div>';
+                multiSigDisplay = '<div id="multiSigAddress" class="muted good">';
+                multiSigDisplay += '<img src="images/nftLockActivate.png" alt="NFT Multi-Sig Locked" style="margin-right:5px;height:20px;" />';
+                multiSigDisplay += 'Multi-Sig Lock Address: ' + multiSigAddress;
+                multiSigDisplay += '</div>';
             }
 
             if (isGroupOwner){
@@ -1909,13 +1934,8 @@ async function makeProfile(userAddress){
     post += '</div>';
 
     // Avatar
-    post += '<div class="profileAvatarWrapper" style="position: relative;width:40px;">'
-    if (isMultiSigLocked[0]){
-        post += '<img src="images/nftLockActivate.png" alt="NFT Multi-Sig Locked" style="position: absolute;right:-6px;top:32px;z-index: 2000;height:20px;" />';
-    }
     post += '<div class="profileAvatar ' + userAddress.toLowerCase() + '">';
     post += '<img src="' + userProfile.profileImage + '" class="profileAvatarImg" onerror="this.onerror=null;this.src=\'images/user.png\'" alt="' + userAddress + '" />';
-    post += '</div>';
     post += '</div>';
 
     // Username
@@ -1936,6 +1956,22 @@ async function makeProfile(userAddress){
 
     if (userProfile.verification === 1){
         post += '<img src="images/verified1.png" style="height:20px;position: relative;top:-2px;margin-left:2px;" />';
+    }
+
+    // Display badges
+    if (userProfile.badges.length > 0){
+        for (let b=0;b< userProfile.badges.length;b++) {
+
+            let badgeURI = userProfile.badges[b][1];
+
+            if (badgeURI.toLowerCase().indexOf('ipfs://') >= 0) {
+                // if it's hosted on IPFS, grab via proxy
+                badgeURI = 'https://cloudflare-ipfs.com/ipfs/' + badgeURI.replace('ipfs://', '').replace('IPFS://', '');
+            }
+            post += '<a href="' + badgeURI + '" data-toggle="lightbox">';
+            post += '<img src="' + badgeURI + '" alt="' + userProfile.badges[b][0] + '" style="height:20px;position: relative;top:-2px;margin-left:5px;" onerror="this.hide();" />';
+            post += '</a>';
+        }
     }
 
     if (walletAddress.toLowerCase() === userAddress.toLowerCase()){
@@ -1992,7 +2028,7 @@ async function makeProfile(userAddress){
     if (userProfile.bio.toString().length > 0){
         bio = userProfile.bio;
     }
-    post += '<div class="profileBio" style="margin-bottom:10px;margin-top:20px;">' + bio + '</div>';
+    post += '<div class="profileBio" style="margin-bottom:10px;margin-top:10px;">' + bio + '</div>';
 
 
     // Show Location and URI and Join Date
@@ -2154,7 +2190,7 @@ async function makeProfile(userAddress){
         post += '<div class="eP">Handle: <input type="text" name="handle" id="handle" /></div>';
         post += '<div>It costs <img src="images/token-DOOM.png" style="width:16px;height:16px;" /> ' + costToUpdateHandle / ethDec + ' DOOM to update your handle (to prevent name squatting)</div>';
 
-        if (parseInt(userDOOMBalance) >= parseInt(costToUpdateHandle)) {
+        if (userDOOMBalance >= parseInt(costToUpdateHandle)) {
             post += '<input id="updateHandle" type="button" class="walletButtonBig gameFont gameButtonBig" onclick="updateHandle()" value="Update Handle" />';
         } else {
             post += '<input id="buyIt" onclick="mintDOOM(100);" type="button" class="walletButtonBig gameFont gameButtonBig" value="Buy 100 DOOM for 1 MATIC" />';
@@ -2383,10 +2419,9 @@ async function getGroupsByMember(userAddress){
     console.log('Getting group memberships for: ', userAddress);
 
     let allGroupDetails = [];
-    let allGroupIDs = [];
 
     // Get the groups they are a member of
-    allGroupIDs = await contractGroups.methods.getGroupMemberships(userAddress).call()
+    let allGroupIDs = await contractGroups.methods.getGroupMemberships(userAddress).call()
         .then(result => {
             return result;
         })
@@ -2457,7 +2492,7 @@ async function buildAsGroup(){
             if (userProfile.groupID > 0) {
                 groups += ' groupAvatar';
             }
-            groups += '" style="border:0px;max-width:30px;max-height:30px;min-width:30px;" onerror="this.onerror=null;this.src=\'images/user.png\'" />';
+            groups += '" style="border:0;max-width:30px;max-height:30px;min-width:30px;" onerror="this.onerror=null;this.src=\'images/user.png\'" />';
             groups += '</div>';
 
 
@@ -2490,7 +2525,7 @@ async function buildAsGroup(){
                 if (groupProfile.groupID > 0) {
                     groups += ' groupAvatar';
                 }
-                groups += '" style="border:0px;max-width:30px;max-height:30px;min-width:30px;" onerror="this.onerror=null;this.src=\'images/user.png\'" />';
+                groups += '" style="border:0;max-width:30px;max-height:30px;min-width:30px;" onerror="this.onerror=null;this.src=\'images/user.png\'" />';
                 groups += '</div>';
 
 
@@ -2511,7 +2546,7 @@ async function buildAsGroup(){
             // if (groupProfile.groupID > 0) {
             //     groups += ' groupAvatar';
             // }
-            // groups += '" style="border:0px;max-width:30px;max-height:30px;min-width:30px;" onerror="this.onerror=null;this.src=\'images/user.png\'" />';
+            // groups += '" style="border:0;max-width:30px;max-height:30px;min-width:30px;" onerror="this.onerror=null;this.src=\'images/user.png\'" />';
             // groups += '</div>';
             //
             // // Username
@@ -2565,7 +2600,7 @@ async function updateHandle(){
                 catchError('getDOOMBalance2', err);
             });
 
-        if (parseInt(allowance) === 0 && parseInt(userDOOMBalance) > parseInt(costToUpdateHandle)){
+        if (parseInt(allowance) === 0 && userDOOMBalance > parseInt(costToUpdateHandle)){
             $('#statusMsg').html('<span class="gameFont errorText">You will have 2 transactions. 1 to approve &amp; 1 to update.</span>');
             let approval = await approve(contractAddressHandles);
         } else if (userDOOMBalance < costToPost){
@@ -2819,6 +2854,24 @@ async function makePost(p, skipRepost, isComment){
         post += '<img src="images/verified1.png" style="height:20px;position: relative;top:-2px;margin-left:2px;" />';
     }
 
+    // Display badges
+    let userProfile =  await getProfileData(p.postedBy);
+
+    if (userProfile.badges.length > 0){
+        for (let b=0;b< userProfile.badges.length;b++) {
+
+            let badgeURI = userProfile.badges[b][1];
+
+            if (badgeURI.toLowerCase().indexOf('ipfs://') >= 0) {
+                // if it's hosted on IPFS, grab via proxy
+                badgeURI = 'https://cloudflare-ipfs.com/ipfs/' + badgeURI.replace('ipfs://', '').replace('IPFS://', '');
+            }
+            post += '<a href="' + badgeURI + '" data-toggle="lightbox">';
+            post += '<img src="' + badgeURI + '" alt="' + userProfile.badges[b][0] + '" style="height:16px;position: relative;top:-2px;margin-left:5px;" onerror="this.hide();" />';
+            post += '</a>';
+        }
+    }
+
     let groupAddresses = [];
 
     if (p.inGroups.length > 0) {
@@ -2880,7 +2933,6 @@ async function makePost(p, skipRepost, isComment){
         for (let g = 0; g < Hashtags.length; g++) {
             if (hashtags) {
                 if (g + 1 <= hashtags.length) {
-                    let re = new RegExp('#' + hashtags[g],"gi");
                     p.message = p.message.replace(hashtags[g], '<a href="?hashtag=' + Hashtags[g] + '">' + hashtags[g] + '</a>');
                 }
             }
@@ -2890,7 +2942,6 @@ async function makePost(p, skipRepost, isComment){
     // Format Tagged Users from message
     let taggedUsers = '';
     if (p.taggedAccounts.length > 0) {
-        let taggedUser = p.message.match(/@[0-9a-zA-Z\-\_]{2,}/g);
         let taggedAddress = p.message.toLowerCase().match(/0x[0-9a-f{40}]*/g);
 
         // Format post of tagged users in post
@@ -2903,27 +2954,6 @@ async function makePost(p, skipRepost, isComment){
                 }
             }
         }
-
-        // We should be allowing people to tag a name as it can change and the link will be gone
-        // if (taggedUser) {
-        //     for (let t = 0; t < taggedUser.length; t++) {
-        //         if (t + 1 <= taggedUser.length) {
-        //             let thisUserHandle = taggedUser[t].replaceAll('@', '');
-        //             let taggedUserAddress = await contractHandles.methods.usrHandleMap(thisUserHandle.toLowerCase()).call()
-        //                 .then(result => {
-        //                     // console.log('Tagged User (' + thisUserHandle + '): ' + result);
-        //                     return result;
-        //                 })
-        //                 .catch(err => {
-        //                     catchError('usrHandleMap', err);
-        //                 });
-        //             if (taggedUserAddress !== nullAddress) {
-        //                 let re = new RegExp('@' + taggedUser[t],"gi");
-        //                 p.message = p.message.replace(re, '<a href="?address=' + taggedUserAddress + '&tagged=1" title="' + taggedAddress[t] + '">' + thisUserHandle + '</a>');
-        //             }
-        //         }
-        //     }
-        // }
 
         // Show the tagged Users
         let tagged = p.taggedAccounts.split(',');
@@ -2940,18 +2970,16 @@ async function makePost(p, skipRepost, isComment){
             // Make the HTML for the post
             taggedUsers += '<div style="float:right;position:relative;margin-right:10px;">';
             if (parseFloat(p.tips) > 0) {
-                taggedUsers += '<img src="images/token-MATIC.png" style="position:absolute;right:-5px;top:0px;width:16px;height:16px;" />';
+                taggedUsers += '<img src="images/token-MATIC.png" style="position:absolute;right:-5px;top:0;width:16px;height:16px;" />';
             } else if (parseFloat(p.tipAmount) > 0){
-                if (p.tipContract === '0x2ecf9ff1b7e1139c4adb521c034cd2874b8bc396'){
-                    taggedUsers += '<img src="images/token-DOOM.png" style="position:absolute;right:-5px;top:0px;width:16px;height:16px;" />';
+                if (p.tipContract === contractAddressDOOM){
+                    taggedUsers += '<img src="images/token-DOOM.png" style="position:absolute;right:-5px;top:0;width:16px;height:16px;" />';
                 } else if (p.tipContract === '0xb45f6e99bc6e4a8bc431ba86b2e0376271c8545f'){
-                    taggedUsers += '<img src="images/token-GBAR.png" style="position:absolute;right:-5px;top:0px;width:16px;height:16px;" />';
-                } else if (p.tipContract === '0xfd7c36c3640dc0eb778ceb463ce618f37fec5103'){
-                    taggedUsers += '<img src="images/token-GP.png" style="position:absolute;right:-5px;top:0px;width:16px;height:16px;" />';
+                    taggedUsers += '<img src="images/token-GBAR.png" style="position:absolute;right:-5px;top:0;width:16px;height:16px;" />';
                 } else if (p.tipContract === '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619'){
-                    taggedUsers += '<img src="images/token-WETH.png" style="position:absolute;right:-5px;top:0px;width:16px;height:16px;" />';
+                    taggedUsers += '<img src="images/token-WETH.png" style="position:absolute;right:-5px;top:0;width:16px;height:16px;" />';
                 } else {
-                    taggedUsers += '<img src="images/coin.png" style="position:absolute;right:-5px;top:0px;width:16px;height:16px;" />';
+                    taggedUsers += '<img src="images/coin.png" style="position:absolute;right:-5px;top:0;width:16px;height:16px;" />';
                 }
             }
             taggedUsers += '<a href="?address=' + tagged[t] + '&tagged=1"><img src="images/taggedUser.png" style="width:30px;"  alt="' + tagged[t] + '"></a></div>';
@@ -3081,26 +3109,24 @@ async function makePost(p, skipRepost, isComment){
         post += '<a href="#lsRet" onclick="tip(' + p.msgID + ');">';
 
         if (parseFloat(p.tipAmount) > 0){
-            if (p.tipContract === '0x2ecf9ff1b7e1139c4adb521c034cd2874b8bc396'){
+            if (p.tipContract === contractAddressDOOM){
                 post += '<img src="images/token-DOOM.png" class="actionIcon" style="width:18px;height:18px;" />';
             } else if (p.tipContract === '0xb45f6e99bc6e4a8bc431ba86b2e0376271c8545f'){
                 post += '<img src="images/token-GBAR.png" class="actionIcon" style="width:18px;height:18px;" />';
-            } else if (p.tipContract === '0xfd7c36c3640dc0eb778ceb463ce618f37fec5103'){
-                post += '<img src="images/token-GP.png" class="actionIcon" style="width:18px;height:18px;" />';
             } else if (p.tipContract === '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619'){
                 post += '<img src="images/token-WETH.png" class="actionIcon" style="width:18px;height:18px;" />';
             } else {
                 post += '<img src="images/coin.png" class="actionIcon" style="width:18px;height:18px;" />';
             }
         } else {
-            post += '<img src="images/tips.png" class="actionIcon" />';
+            post += '<img src="images/tips.png" class="actionIcon" alt="Tips" />';
         }
         post += '</a>';
 
         post += '<span class="actionVal"><a href="?tips=' + p.msgID + '">' + tipsReceived + '</a></span>';
 
         // Show Share Button
-        post += '<a href="?msg=' + p.msgID + '"><img src="images/share.png" style="height:18px;" class="actionIcon" /></a>';
+        post += '<a href="?msg=' + p.msgID + '"><img src="images/share.png" style="height:18px;" class="actionIcon" alt="share" /></a>';
 
         // Tagged Accounts
         post += taggedUsers;
@@ -3194,7 +3220,7 @@ async function getProfileImageFromNFT(avatarMetadata, avatarContract, usrAddress
                         // }
                         // newImg += ' data-footer="' + avatarContract + '"';
                         newImg += '>';
-                        newImg += '<img src="' + nftImg + '" class="avatarImg';
+                        newImg += '<img src="' + nftImg + '" class="profileAvatarImg';
                         if (groupID > 0){
                             newImg += ' groupAvatar';
                         }
@@ -3313,28 +3339,12 @@ function resetUI(){
     $('#connectWalletToPost').hide();
 }
 
-
-function escapeHtml(unsafe)
-{
-    return unsafe
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
 function startLoading(msg){
     $('#loading').show();
     $('#loadMsg').html(msg);
 }
 function endLoading(){
     $('#loading').fadeOut();
-}
-
-async function lookupENSName(address){
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    return await provider.lookupAddress(address);
 }
 
 function addNameToCache(address, name){
@@ -3393,8 +3403,33 @@ async function getProfileData(address){
 
     userProfile.profileImage = profileImage;
 
-    return userProfile;
+    userProfile.badges = [];
 
+    // Check for Badges
+    let userBadges = await contractBadges.methods.getUserBadges(address).call()
+        .then(result => {
+            console.log("Badges: ", result);
+            return result;
+        })
+        .catch(err => {
+            catchError('getUserBadges', err);
+        });
+
+    for (let i=0;i<userBadges.length;i++) {
+        // Get badge details
+        let badgeDetails = await contractBadges.methods.getBadgeDetails(userBadges[i]).call()
+            .then(result => {
+                console.log("Badge details: ", result);
+                userProfile.badges.push(result);
+            })
+            .catch(err => {
+                catchError('getBadgeDetails', err);
+            });
+    }
+
+    console.log("User Profile: ", userProfile);
+
+    return userProfile;
 }
 
 
@@ -3470,7 +3505,7 @@ async function validateERC20(tokenContract, amount){
     return await validateERC20Contract(tokenContract, amount);
 }
 
-async function catchError(func, err, skipLoadings, type){
+async function catchError(func, err, skipLoadings){
     if (!skipLoadings) {
         endLoading();
     }

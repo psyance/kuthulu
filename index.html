@@ -310,7 +310,7 @@
             float:left;
             margin-right:20px;
             margin-top:5px;
-            width:40px;
+            width:64px;
             z-index: 1000;
         }
 
@@ -444,6 +444,20 @@
             font-size: 12px;
         }
 
+        #walletBalance{
+            position: fixed;
+            top: 15px;
+            right: 43px;
+            font-size: 14px;
+            z-index: 99;
+        }
+
+        .alertDOOM{
+            position: relative;
+            top:-1px;
+            margin-right:4px;
+        }
+
     </style>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -490,6 +504,7 @@
         </a>
         <ul class="sidebar-menu" id="sideLinks">
             <li id="myProfile"></li>
+            <li><a href="#lsRet" onclick="$('#mintGroupLink').hide();$('#mintGroupWrapper').slideDown();$('#groupToMint').focus();">Mint a Group</a></li>
             <li><a class="scroll-to" href="https://www.kryptosucks.com/">Krypto Sucks! Podcast</a></li>
         </ul>
         <!-- /side-bar-menu -->
@@ -511,6 +526,8 @@
 
 
     <div class="main-content-wrapper">
+
+        <div id="walletBalance" class="gameFont good"><img src="images/token-DOOM.png" alt="DOOM" /> <span id="doomBalance"></span></div>
 
         <div id="walletInfo">
             <div id="mm"></div>
@@ -564,9 +581,6 @@
                         <div id="mintGroupWrapper" style="display: none;">
                             <input id="mintGroup" type="button" class="walletButtonBig gameFont gameButtonBig" onclick="mintGroup()" value="Mint Group" />
                             Group: <input id="groupToMint" />
-                        </div>
-                        <div id="mintGroupLink">
-                            <span onclick="$('#mintGroupLink').hide();$('#mintGroupWrapper').slideDown();$('#groupToMint').focus();" style="cursor: pointer;color:turquoise;">Mint a Group</span>
                         </div>
 
                         <div style="margin-bottom:20px;">
@@ -669,9 +683,6 @@
                                                 </a>
                                                 <a href="#lsRet" onclick="changeTipType('GBAR')" class="dropdown-item">
                                                     <img src="images/token-GBAR.png" class="menuImage" /> GBAR
-                                                </a>
-                                                <a href="#lsRet" onclick="changeTipType('GP')" class="dropdown-item">
-                                                    <img src="images/token-GP.png" class="menuImage" /> GP
                                                 </a>
                                                 <a href="#lsRet" onclick="changeTipType('WETH')" class="dropdown-item">
                                                     <img src="images/token-WETH.png" class="menuImage" /> WETH
@@ -985,9 +996,6 @@
                 break;
             case "GBAR":
                 $('#token').val('0xb45F6e99Bc6E4A8Bc431BA86B2E0376271c8545F');
-                break;
-            case "GP":
-                $('#token').val('0xFD7c36C3640DC0eb778ceB463ce618f37FEc5103');
                 break;
             case "WETH":
                 $('#token').val('0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619');
