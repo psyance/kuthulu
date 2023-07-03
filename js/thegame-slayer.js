@@ -84,7 +84,7 @@ const abiBlocking = [{"inputs":[],"stateMutability":"nonpayable","type":"constru
 const abiTagged = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint8","name":"version","type":"uint8"}],"name":"Initialized","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"msgID","type":"uint256"},{"indexed":true,"internalType":"address","name":"taggedAccount","type":"address"}],"name":"logAddTag","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"msgID","type":"uint256"},{"indexed":true,"internalType":"address","name":"untaggedAccount","type":"address"}],"name":"logRemoveTag","type":"event"},{"inputs":[],"name":"KUtils","outputs":[{"internalType":"contract IKUtils","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"msgID","type":"uint256"},{"internalType":"address[]","name":"addressesTagged","type":"address[]"}],"name":"addTags","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"admins","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"usrAddress","type":"address"},{"internalType":"uint256","name":"startFrom","type":"uint256"}],"name":"getTaggedMsgIDs","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_kutils","type":"address"},{"internalType":"uint256","name":"_maxItemsReturn","type":"uint256"},{"internalType":"uint256","name":"_maxItemsPerBucket","type":"uint256"},{"internalType":"uint256","name":"_maxTaggedAccounts","type":"uint256"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"maxItemsPerBucket","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"maxItemsReturn","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"maxTaggedAccounts","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"pause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"msgID","type":"uint256"},{"internalType":"address[]","name":"addressesTagged","type":"address[]"}],"name":"removeTags","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"","type":"string"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"taggedMap","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"","type":"string"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"taggedMapMap","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unpause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"admin","type":"address"},{"internalType":"bool","name":"status","type":"bool"}],"name":"updateAdmin","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_kutils","type":"address"},{"internalType":"uint256","name":"_maxTaggedAccounts","type":"uint256"}],"name":"updateDetails","outputs":[],"stateMutability":"nonpayable","type":"function"}];
 const abiHashtags = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint8","name":"version","type":"uint8"}],"name":"Initialized","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"string","name":"hashtags","type":"string"},{"indexed":true,"internalType":"uint256","name":"msgID","type":"uint256"}],"name":"logAddHashtag","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"string","name":"hashtags","type":"string"},{"indexed":true,"internalType":"uint256","name":"msgID","type":"uint256"}],"name":"logRemoveHashtag","type":"event"},{"inputs":[],"name":"KUtils","outputs":[{"internalType":"contract IKUtils","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"msgID","type":"uint256"},{"internalType":"string[]","name":"hashtagsToToggle","type":"string[]"}],"name":"addHashtags","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"admins","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"hashtag","type":"string"},{"internalType":"uint256","name":"startFrom","type":"uint256"}],"name":"getMsgIDsFromHashtag","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"","type":"string"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"hashtagMap","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"","type":"string"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"hashtagMapMap","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_kutils","type":"address"},{"internalType":"uint256","name":"_maxItemsReturn","type":"uint256"},{"internalType":"uint256","name":"_maxItemsPerBucket","type":"uint256"},{"internalType":"uint256","name":"_maxHashtagLength","type":"uint256"},{"internalType":"uint256","name":"_minHashtagLength","type":"uint256"},{"internalType":"uint256","name":"_maxHashtags","type":"uint256"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"maxHashtagLength","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"maxHashtags","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"maxItemsPerBucket","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"maxItemsReturn","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"minHashtagLength","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"pause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"msgID","type":"uint256"},{"internalType":"string[]","name":"hashtagsToToggle","type":"string[]"}],"name":"removeHashtags","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unpause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"admin","type":"address"},{"internalType":"bool","name":"status","type":"bool"}],"name":"updateAdmin","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_kutils","type":"address"},{"internalType":"uint256","name":"_maxHashtags","type":"uint256"}],"name":"updateDetails","outputs":[],"stateMutability":"nonpayable","type":"function"}];
 const abiRaffleTickets = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint8","name":"version","type":"uint8"}],"name":"Initialized","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"logClaimToken","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"logMintToken","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"multiSig","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"logTokenLocked","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"logTokenUnlocked","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address[]","name":"users","type":"address[]"},{"indexed":true,"internalType":"uint256","name":"quantity","type":"uint256"}],"name":"logUpdateClaimable","type":"event"},{"inputs":[{"internalType":"uint256","name":"tokenID","type":"uint256"}],"name":"activateMultiSigLock","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenID","type":"uint256"},{"internalType":"address","name":"multiSigAddress","type":"address"}],"name":"addMultiSigLock","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"admins","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address[]","name":"users","type":"address[]"},{"internalType":"uint256","name":"quantity","type":"uint256"}],"name":"awardTix","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"checkTix","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"claimTix","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"costToMint","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenID","type":"uint256"}],"name":"getMultiSigAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getWhaleSizes","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"level","type":"uint256"}],"name":"getWhales","outputs":[{"internalType":"address[]","name":"","type":"address[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"cost","type":"uint256"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"isOperator","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenID","type":"uint256"}],"name":"isMultiSigLocked","outputs":[{"internalType":"bool[2]","name":"","type":"bool[2]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"quantity","type":"uint256"}],"name":"mintTix","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"minted","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"pause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenID","type":"uint256"}],"name":"removeMultiSigLock","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"bool","name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_newVault","type":"address"}],"name":"setVaultAddress","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes4","name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"tixBaseURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenOfOwnerByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenID","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unpause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"admin","type":"address"},{"internalType":"bool","name":"status","type":"bool"}],"name":"updateAdmin","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tixCost","type":"uint256"},{"internalType":"uint256","name":"_maxToClaim","type":"uint256"},{"internalType":"string","name":"_tixBaseURI","type":"string"}],"name":"updateDetails","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"vaultAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"whaleSizes","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"}];
-const abiBadges = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint8","name":"version","type":"uint8"}],"name":"Initialized","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"string","name":"badgeName","type":"string"},{"indexed":false,"internalType":"string","name":"badgeURL","type":"string"},{"indexed":true,"internalType":"address","name":"allowedAddress","type":"address"}],"name":"addBadgeToApp","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"addedBy","type":"address"},{"indexed":true,"internalType":"uint256","name":"badgeID","type":"uint256"},{"indexed":true,"internalType":"address","name":"userAddress","type":"address"}],"name":"addToUser","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"badgeID","type":"uint256"}],"name":"removeBadgeFromApp","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"removedBy","type":"address"},{"indexed":true,"internalType":"uint256","name":"badgeID","type":"uint256"},{"indexed":true,"internalType":"address","name":"userAddress","type":"address"}],"name":"removeFromUser","type":"event"},{"inputs":[],"name":"KUtils","outputs":[{"internalType":"contract IKUtils","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"badgeName","type":"string"},{"internalType":"string","name":"badgeURI","type":"string"},{"internalType":"address","name":"allowedAddress","type":"address"},{"internalType":"uint256","name":"minimumReq","type":"uint256"},{"internalType":"uint256","name":"badgeTypeID","type":"uint256"}],"name":"addBadge","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"userAddress","type":"address"},{"internalType":"uint256","name":"badgeID","type":"uint256"}],"name":"addBadgeToUser","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"badgeCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"badgeIDs","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"badgeID","type":"uint256"}],"name":"getBadgeDetails","outputs":[{"internalType":"string[]","name":"","type":"string[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"userAddress","type":"address"}],"name":"getUserBadges","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_kutils","type":"address"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"pause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"badgeID","type":"uint256"}],"name":"removeBadge","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"userAddress","type":"address"},{"internalType":"uint256","name":"badgeID","type":"uint256"}],"name":"removeBadgeFromUser","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unpause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"admin","type":"address"},{"internalType":"bool","name":"status","type":"bool"}],"name":"updateAdmin","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_kutils","type":"address"}],"name":"updateContracts","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"contractAddress","type":"address"},{"internalType":"bool","name":"status","type":"bool"}],"name":"updateTrustedContract","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"badgeID","type":"uint256"}],"name":"verifyBadge","outputs":[],"stateMutability":"nonpayable","type":"function"}];
+const abiBadges = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint8","name":"version","type":"uint8"}],"name":"Initialized","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"string","name":"badgeName","type":"string"},{"indexed":false,"internalType":"string","name":"badgeURL","type":"string"},{"indexed":true,"internalType":"address","name":"allowedAddress","type":"address"},{"indexed":false,"internalType":"string","name":"otherURI","type":"string"},{"indexed":false,"internalType":"string","name":"desc","type":"string"}],"name":"addBadgeToApp","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"addedBy","type":"address"},{"indexed":true,"internalType":"uint256","name":"badgeID","type":"uint256"},{"indexed":true,"internalType":"address","name":"userAddress","type":"address"}],"name":"addToUser","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"badgeID","type":"uint256"}],"name":"disableBadgeLog","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"badgeID","type":"uint256"}],"name":"enableBadgeLog","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"badgeID","type":"uint256"}],"name":"removeBadgeFromApp","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"removedBy","type":"address"},{"indexed":true,"internalType":"uint256","name":"badgeID","type":"uint256"},{"indexed":true,"internalType":"address","name":"userAddress","type":"address"}],"name":"removeFromUser","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"badgeID","type":"uint256"},{"indexed":true,"internalType":"string","name":"badgeName","type":"string"},{"indexed":false,"internalType":"string","name":"badgeURL","type":"string"},{"indexed":true,"internalType":"address","name":"allowedAddress","type":"address"},{"indexed":false,"internalType":"string","name":"otherURI","type":"string"}],"name":"updateBadgeLog","type":"event"},{"inputs":[],"name":"KUtils","outputs":[{"internalType":"contract IKUtils","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"badgeName","type":"string"},{"internalType":"string","name":"badgeURI","type":"string"},{"internalType":"address","name":"allowedAddress","type":"address"},{"internalType":"uint256","name":"minimumReq","type":"uint256"},{"internalType":"uint256","name":"badgeTypeID","type":"uint256"},{"internalType":"string","name":"otherURI","type":"string"},{"internalType":"string","name":"desc","type":"string"}],"name":"addBadge","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"userAddress","type":"address"},{"internalType":"uint256","name":"badgeID","type":"uint256"}],"name":"addBadgeToUser","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"badgeCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"badgeIDs","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"badgeID","type":"uint256"}],"name":"disableBadge","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"badgeID","type":"uint256"}],"name":"enableBadge","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"badgeID","type":"uint256"}],"name":"getBadgeDetails","outputs":[{"internalType":"string[]","name":"","type":"string[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getBadges","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"userAddress","type":"address"}],"name":"getUserBadges","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_kutils","type":"address"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"pause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"badgeID","type":"uint256"}],"name":"removeBadge","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"userAddress","type":"address"},{"internalType":"uint256","name":"badgeID","type":"uint256"}],"name":"removeBadgeFromUser","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unpause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"admin","type":"address"},{"internalType":"bool","name":"status","type":"bool"}],"name":"updateAdmin","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"badgeID","type":"uint256"},{"internalType":"string","name":"badgeName","type":"string"},{"internalType":"string","name":"badgeURI","type":"string"},{"internalType":"address","name":"allowedAddress","type":"address"},{"internalType":"uint256","name":"minimumReq","type":"uint256"},{"internalType":"uint256","name":"badgeTypeID","type":"uint256"},{"internalType":"string","name":"otherURI","type":"string"},{"internalType":"string","name":"desc","type":"string"}],"name":"updateBadge","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_kutils","type":"address"}],"name":"updateContracts","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"contractAddress","type":"address"},{"internalType":"bool","name":"status","type":"bool"}],"name":"updateTrustedContract","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"badgeID","type":"uint256"}],"name":"verifyBadge","outputs":[],"stateMutability":"nonpayable","type":"function"}];
 
 // Contract Interfaces
 let contractKUTHULU = new web3inf.eth.Contract(abiKUTHULU, contractAddress);
@@ -111,6 +111,7 @@ let contractHashtags = new web3inf.eth.Contract(abiHashtags, contractAddressHash
 let contractRaffleTix = new web3inf.eth.Contract(abiRaffleTickets, contractAddressRaffleTix);
 let contractRaffleTixPub = new web3.eth.Contract(abiRaffleTickets, contractAddressRaffleTix);
 let contractBadges = new web3inf.eth.Contract(abiBadges, contractAddressBadges);
+let contractBadgesPub = new web3.eth.Contract(abiBadges, contractAddressBadges);
 
 $('#contractLink').html('<a href="' + txScanURLPrefix + "/address/" + contractAddress + '" target="_blank" style="color:blue;">' + contractAddress + '</a>')
 
@@ -1236,6 +1237,7 @@ async function getPosts() {
 
     let msgIDs = [];
     let addresses = [];
+    let badges = [];
     let scrollTo = '';
 
     let qsMsgID = qs.get('msg');
@@ -1252,6 +1254,7 @@ async function getPosts() {
     let qsFollowing = qs.get('following');
     let qsFollowers = qs.get('followers');
     let qsOnlyFollowing = qs.get('onlyFollowing');
+    let qsBadges = qs.get('badges');
 
     if (qsHashtag && qsHashtag !== ''){
         msgIDs = await contractKUTHULU.methods.getMsgIDsByHashtag(qsHashtag, 0).call()
@@ -1540,6 +1543,30 @@ async function getPosts() {
             .catch(err => {
                 catchError('getTippersFromMsgID', err);
             });
+    } else if (qsBadges && qsBadges !== '') {
+        if (parseInt(qsBadges) !== 1) {
+            badges = await contractBadges.methods.getUserBadges(qsBadges).call()
+                .then(result => {
+                    console.log('Badges:', result);
+                    $('#postBox').hide();
+                    return result;
+                })
+                .catch(err => {
+                    catchError('getBadges', err);
+                });
+        } else {
+            let allBadgeIDs = await contractBadges.methods.getBadges().call()
+                .then(result => {
+                    console.log('All Badges:', result);
+                    $('#postBox').hide();
+                    return result;
+                })
+                .catch(err => {
+                    catchError('getBadges', err);
+                });
+
+            let allBadges = await processBadges(allBadgeIDs);
+        }
     } else {
         // Get all newest message IDs
         let thisCounter = 0;
@@ -1549,11 +1576,12 @@ async function getPosts() {
         for (let i = allMessagesPos; i > 0; i--) {
             thisCounter++;
             msgIDs.push(parseInt(i));
+
             if (thisCounter === maxMessagesToGet){
                 break;
             }
         }
-        allMessagesPos = totalMessages - maxMessagesToGet;
+        allMessagesPos = msgIDs[msgIDs.length - 1] - 1;
 
         if (msgIDs[msgIDs.length - 1] !== 1){
             showMoreButton = true;
@@ -1572,6 +1600,10 @@ async function getPosts() {
 
     if (addresses.length > 0) {
         let pResp = await processAddresses(addresses);
+    }
+
+    if (badges.length > 0) {
+        let pResp = await processBadges(badges, qsBadges);
     }
 
     endLoading();
@@ -1712,6 +1744,129 @@ async function makeUserListing(posterAddress){
     post += '</div>';
 
     return post;
+}
+
+async function processBadges(badges, ownerAddress){
+    for (let i = 0; i <= badges.length - 1; i++) {
+        let user = await makeBadges(badges[i], ownerAddress);
+
+        $('#postsWrapper').append(user);
+    }
+}
+
+async function makeBadges(badgeID, ownerAddress){
+    // Get badge details
+    let badge = await contractBadges.methods.getBadgeDetails(badgeID).call()
+        .then(result => {
+            console.log('getBadgeDetails: ' + result);
+            return result;
+        })
+        .catch(err => {
+            catchError('checkTips', err);
+        });
+
+    if (badge[4] === 'active') {
+
+        let isOwned = false;
+
+        if (walletAddress) {
+            let userBadges = await contractBadges.methods.getUserBadges(walletAddress).call()
+                .then(result => {
+                    console.log("Badges: ", result);
+
+                    if(result.length > 0){
+                        for (let b=0;b < result.length;b++){
+                            if (parseInt(result[b]) === parseInt(badgeID)){
+                                isOwned = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    return result;
+                })
+                .catch(err => {
+                    catchError('getUserBadges-2', err);
+                });
+        }
+
+        let post = '<div class="messageWrapper" style="color:#fff;">';
+
+        if (isOwned && walletAddress === ownerAddress) {
+            post += '<div class="datePosted"><a href="#" onclick="removeBadge(' + badgeID + ')">[ remove ]</a></div>';
+        }
+
+        if (!isOwned) {
+            post += '<div class="datePosted"><a href="#" onclick="verifyBadge(' + badgeID + ')">[ verify ]</a></div>';
+        }
+
+        // Avatar
+        let badgeURI = badge[1];
+
+        if (badgeURI.toLowerCase().indexOf('ipfs://') >= 0) {
+            // if it's hosted on IPFS, grab via proxy
+            badgeURI = 'https://cloudflare-ipfs.com/ipfs/' + badgeURI.replace('ipfs://', '').replace('IPFS://', '');
+        }
+        post += '<a href="' + badgeURI + '" data-toggle="lightbox">';
+        post += '<img src="' + badgeURI + '" alt="' + badge[0] + '" style="height:40px;position: relative;top:-2px;margin-left:5px;" onerror="this.hide();" />';
+        post += '</a>';
+
+        // Badge Name
+        post += '<div class="nameWrapper"><a href="' + txScanURLPrefix + 'address/' + badge[2] + '" class="name" target="_blank">';
+        post += badge[0];
+        post += '</a>';
+
+        // Details
+        post += '<div class="nameWrapper">';
+        post += badge[7];
+        if (badge[6]) {
+            post += ' - <a href="' + badge[6] + '" target="_blank">' + badge[6] + '</a>';
+        }
+        post += '</a>';
+
+        post += '</div>';
+
+        post += '<div class="clearfix"></div>';
+
+        post += '</div>';
+
+        return post;
+    } else {
+        console.log("Badge Not Active");
+        // Badge not active, so skipping
+    }
+}
+
+function checkBadgeOwnership(){
+    userBadges
+}
+
+async function removeBadge(badgeID){
+    startLoading('Removing Badge...');
+
+    var resp = await contractBadgesPub.methods.removeBadgeFromUser(walletAddress, badgeID).send({from: walletAddress})
+        .then(result => {
+            endLoading();
+            return result;
+        })
+        .catch(err => {
+            endLoading();
+            catchError('removeBadge', err);
+        });
+}
+
+async function verifyBadge(badgeID){
+    startLoading('Verifying Badge...');
+
+    var resp = await contractBadgesPub.methods.verifyBadge(badgeID).send({from: walletAddress})
+        .then(result => {
+            endLoading();
+            return result;
+        })
+        .catch(err => {
+            endLoading();
+            catchError('verifyBadge', err);
+        });
 }
 
 
@@ -1926,8 +2081,8 @@ async function makeProfile(userAddress){
             } else {
                 post += '<a href="#" onclick="toggleWhitelist(0);" class="dropdown-item"><img src="images/whitelist.png" class="menuImage" /> Use Whitelist</a>';
             }
-
         }
+        post += '<a href="?badges=' + userAddress + '" class="dropdown-item"><img src="images/badges.png" class="menuImage" /> Badges</a>';
     }
 
     post += '</div>';
