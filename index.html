@@ -506,19 +506,22 @@
             <li id="myProfile"></li>
             <li><a href="?badges=1">View All Badges</a></li>
             <li><a href="#lsRet" onclick="$('#mintGroupLink').hide();$('#mintGroupWrapper').slideDown();$('#groupToMint').focus();">Mint a Group</a></li>
-            <li><a class="scroll-to" href="https://docs.kuthulu.xyz/">KUTHULU Whitepaper</a></li>
+            <li><a href="https://docs.kuthulu.xyz/">KUTHULU Whitepaper</a></li>
         </ul>
         <!-- /side-bar-menu -->
 
         <div class="sidebar-bottom">
             <div class="social-icon mrg-top-15 text-center">
-                <a href="https://www.Twitter.com/KryptoSucks" target="_blank" class="btn btn-icon twitter border no-border circle text-dark"><i class="ti-twitter"></i></a>
+                <a href="https://www.Twitter.com/KUTHULUapp" target="_blank" class="btn btn-icon twitter border no-border circle text-dark"><i class="ti-twitter"></i></a>
                 <a href="https://www.youtube.com/channel/UCtLfIdOKt6Ep0EB3gHpOI6Q" target="_blank" class="btn btn-icon youtube border no-border circle text-dark"><i class="ti-youtube"></i></a>
                 <a href="https://discord.gg/atfGXANP" target="_blank" class="btn btn-icon instagram border no-border circle text-dark"><img src="images/discord.png" style="width:20px;" alt="discord "/></a>
                 <a href="https://opensea.io/collection/sgmarinesandaliens" target="_blank" class="btn btn-icon opensea border no-border circle text-dark"><img src="images/opensea.png" style="width:20px;" alt="opensea "/></a>
             </div>
             <!-- /social-icon -->
-            <h6 class="text-center">© 2023 DOOM labs!</h6>
+            <h6 class="text-center">©<span id="year"></span> DOOM Labs</h6>
+            <script>
+                document.getElementById("year").innerHTML = new Date().getFullYear();
+            </script>
         </div>
         <!-- /sidebar-bottom -->
 
@@ -528,7 +531,7 @@
 
     <div class="main-content-wrapper">
 
-        <div id="walletBalance" class="gameFont good"><img src="images/token-DOOM.png" alt="DOOM" /> <span id="doomBalance"></span></div>
+        <div id="walletBalance" class="gameFont good"><img src="images/token-DOOM.png" alt="DOOM" /> <span id="doomBalance">0</span> DOOM</div>
 
         <div id="walletInfo">
             <div id="mm"></div>

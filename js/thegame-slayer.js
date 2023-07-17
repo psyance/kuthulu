@@ -120,7 +120,9 @@ $(".page-loader").delay(500).fadeOut("slow");
 
 const ethDec = 1000000000000000000;
 
-let walletAddress;
+const nullAddress = '0x0000000000000000000000000000000000000000';
+
+let walletAddress = nullAddress;
 let walletChainID;
 
 let validWalletConnection = false;
@@ -145,8 +147,6 @@ let nameCache = {};
 let allMessagesPos = 0;
 
 const validImgExt = ['gif','jpg','jpeg','png','webp','svg'];
-
-const nullAddress = '0x0000000000000000000000000000000000000000';
 
 // Get any query strings
 const qs = new URLSearchParams(window.location.search);
@@ -275,9 +275,9 @@ async function checkWallet(attempt) {
         let network = await web3.eth.net.getId();
 
         console.log('Checking if connected network (' + network + ') = valid network (' + validNetworkID + ')');
+        console.log('Wallet Address: ', window.ethereum.selectedAddress);
 
-        if (network === validNetworkID) {
-
+        if (network === validNetworkID && window.ethereum.selectedAddress !== null) {
             walletAddress = await web3.utils.toChecksumAddress(window.ethereum.selectedAddress);
 
             console.log('wallet address: ', walletAddress);
@@ -364,12 +364,12 @@ async function checkWallet(attempt) {
                 console.log('No Accounts Found');
 
                 catchError('checkWallet', "No accounts found on wallet. Try refreshing?", 1);
-1
+
                 // Show the connect button
                 showConnectWalletButtons(true);
             }
 
-        } else {
+        } else if (window.ethereum.selectedAddress !== null) {
             walletAddress = await web3.utils.toChecksumAddress(window.ethereum.selectedAddress);
 
             if (walletAddress !== null && walletAddress !== undefined && attempt !== 2) {
@@ -384,6 +384,8 @@ async function checkWallet(attempt) {
                 catchError('checkWallet', 'You\'re connected to the wrong network.<br/>Connect to Polygon and refresh.');
             }
 
+        } else {
+            console.log('MetaMask not installed or Locked');
         }
     } else {
         console.log('MetaMask NOT installed');
@@ -3004,7 +3006,9 @@ async function makePost(p, skipRepost, isComment){
 
 
     // Post
-    if (skipRepost || isComment){
+    if ( p.isRepostOf > 0) {
+        post += '<div class="post">';
+    } else if (skipRepost || isComment || p.isRepostOf === 0){
         post += '<div class="repost">';
     } else {
         post += '<div class="post">';
@@ -3456,7 +3460,7 @@ async function getProfileImageFromNFT(avatarMetadata, avatarContract, usrAddress
                         // }
                         // newImg += ' data-footer="' + avatarContract + '"';
                         newImg += '>';
-                        newImg += '<img src="' + nftImg + '" class="profileAvatarImg';
+                        newImg += '<img src="' + nftImg + '" class="avatarImg';
                         if (groupID > 0){
                             newImg += ' groupAvatar';
                         }
