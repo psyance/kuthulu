@@ -35,39 +35,40 @@ console.log("https://DOOMLabs.io\n\n\n");
 $(".side-nav").toggleClass("toggled");
 
 const web3 = new Web3(window.ethereum);
-let web3inf = new Web3('https://polygon-mainnet.infura.io/v3/8c82aaa7f7694749bf2643b11eeeb062');
-let web3alc = new Web3('https://polygon-mainnet.g.alchemy.com/v2/yQTpMl7h-ezaRrA7B3cnRa4td3tW2QK4');
-let txScanURLPrefix = 'https://polygonscan.com/';
-let validNetworkID = 137;
+let web3inf = new Web3('https://polygon-mumbai.infura.io/v3/f5ec4715ed494400a7aa1a7ea57f5ac6');
+let web3alc = new Web3('https://polygon-mumbai.g.alchemy.com/v2/8nHav8t03vbfOzaPVws7Q6Aku_U0I0vY');
+let web3ETH = new Web3('https://mainnet.infura.io/v3/f5ec4715ed494400a7aa1a7ea57f5ac6');
+let txScanURLPrefix = 'https://mumbai.polygonscan.com/';
+let validNetworkID = 80001;
 let chainIDRaw = web3.utils.toHex(validNetworkID);
 let validChainID = chainIDRaw.toString()
 
 // Contract Addresses
-let contractAddress = '0x1337AF99B61116CE034C1972EEc87cF348Dd668e';
-let contractAddressDOOM = '0x1A0d31aB55C97E6fF28EE66CFf1C8aF2c80427e8';
-let contractAddressKUtils = '0xf1860fc98e6926e0cc12f116cfa56492E22B4Fb4';
-let contractAddressGroupsTokens = '0xFA2Cdf8D67065476f7A837E727dE82FF636753DD';
-let contractAddressGroups = '0x305Abd049306d8faaF41e77799542A4aad09504e';
-let contractAddressMessageData = '0x8c8Ab00A0CB155EfdD392CfF31aCE79566BBd1D4';
-let contractAddressMessageFormat = '0xbBd034Dc8AEE8e767e8e9a8019AD6909CB2d452C';
-let contractAddressPosts = '0x91C45a3FC077AA56D950194E6a619db60741bF96';
-let contractAddressHashtags = '0xd6D3Ef7DDB6AF28141A41c94C2e47760ba92B994';
-let contractAddressProfiles = '0xde089F038729dA20f8e26948142657Fd5Cfdd006';
-let contractAddressLikes = '0x3EaD385484ed96cd5dC9Db4Eef83293d70eD8dfd';
-let contractAddressTips = '0x5A43Cf5FC5D525801433D430766C14bf14FCcA34';
-let contractAddressGroupPosts = '0x41CDCA1D8d2110d6ecc0A561a2231F6aF286a654';
-let contractAddressHandles = '0x8BF41bDf693bfb06A326BF1ac7DD0277F4399903';
-let contractAddressFollowers = '0x2567C252679E16CBF5665A900Cc3f2C31eD2e309';
-let contractAddressBlocking = '0xCc88c3c3bdA9AFac710A490932068F4cD395C56e';
-let contractAddressTagged = '0x2dd699A6b9fAB714AA42dC442e89ADb08B789b1d';
-let contractAddressGroupMetadata = '0xAf7f29Eb8dc7AbE3b29000210fEF89998062002e';
-let contractAddressBadges = '0xE24A1A3247AF274F8338e81F27554EC66162Cbf8';
-let contractAddressAmulets = '0x934A1c65949114b5aC28f6a23f9A255497932494';
-let contractAddressKultists = '0xBd8A40DeC54efd635E8AFC8bBA7F3f7072dBd101';
-let contractAddressRaffleTix = '0x4D5fec0d054De436258C96ad2De59006078BA5dD';
-let contractAddressSOULS = '0xd8cd041fAD61dCC02B1Fc67a3b1013d4720c7a50';
-let contractAddressRewards = '0xF380e0C317AE3794312C09496D07d88D332861D0';
-let contractAddressSampleContractHook = '0xE4af60AC5E9Fca01f9BDB18Ea8fC7C7E4B7e5f9d';
+let contractAddress = '0x6B25B629E017B6f0e60F297FeB60B0aDc3DC25f7';
+let contractAddressDOOM = '0x2ECF9Ff1B7e1139C4adB521C034CD2874B8bc396';
+// let contractAddressKUtils = '0x436C37BE8876016A9670Cc16D81A16135172D09a';
+let contractAddressGroupsTokens = '0x22Cc86760343473EB44FEC0a98dC5e40f049398d';
+let contractAddressGroups = '0xba9975061FD8EaA82327d25A2C8D8Ac8CB103Ee7';
+// let contractAddressMessageData = '0x57F44A175EA6eAF627e5d450bbaEf72dC7aeFd30';
+// let contractAddressMessageFormat = '0x14e0306B6211540d4c752AF89Dd09c624AF73193';
+// let contractAddressPosts = '0x864e7dB416C35030455E4276A4f98cd32fC3d9De';
+let contractAddressHashtags = '0x4aa235b12cB7c3B5EbBB5e9ec098cF0226484F30';
+let contractAddressProfiles = '0x9B23F7C6a82822eB46eD037CFb5121f1c5ad3FcB';
+let contractAddressLikes = '0xA95006f6e2DA0759BCA62E8AD08D5F3eb7377f12';
+let contractAddressTips = '0xbb30d7ddE87cb9eDC8BbA99fa6B2cc25de3B0204';
+let contractAddressGroupPosts = '0xb3C286E9683F23da9AdBa2e008618D4347646A94';
+let contractAddressHandles = '0xD0dCaE1fE821F1a860413d75E193b6C3a0871fD0';
+let contractAddressFollowers = '0xB2b6F4e3Cff5794E0b614698e3bcD9f6C35bc53D';
+let contractAddressBlocking = '0x31D9111c8A47045168E28Dfd202addeB056dadaE';
+let contractAddressTagged = '0x8A6753a89C66EB6f16d47dbD5CBB3557e5342813';
+// let contractAddressGroupMetadata = '0xA16B189336fA7cf5cbB0c9d095f8202e5fdEB2C1';
+let contractAddressAmulets = '0x3753CB80615F8ddc705a4eA8af91e02Cea938964';
+let contractAddressKultists = '0x1417984f4CC5d04F07b854090c8B9e4BC957BD6A';
+let contractAddressRaffleTix = '0xEb240D9DDc9482D3d2BFc75b708BB059ca7188f1';
+let contractAddressSOULS = '0xb56225303810e66c71a404DD262B198a0db61f71';
+// let contractAddressRewards = '0x540d3B9214C2552dE2E7A3d0907034550BADea98';
+let contractAddressBadges = '0xf9E040CAFA95e0aaEDA6569C7B91f7dAeABDDB8F';
+// let contractAddressSampleContractHook = '0x58760414d8e24d21582c2d39e8169421f6b4e6a4';
 
 
 // ABIs
