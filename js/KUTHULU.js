@@ -34,6 +34,42 @@ console.log("https://DOOMLabs.io\n\n\n");
 
 $(".side-nav").toggleClass("toggled");
 
+// const web3 = new Web3(window.ethereum);
+// let web3inf = new Web3('https://polygon-mainnet.infura.io/v3/8c82aaa7f7694749bf2643b11eeeb062');
+// let web3alc = new Web3('https://polygon-mainnet.g.alchemy.com/v2/yQTpMl7h-ezaRrA7B3cnRa4td3tW2QK4');
+// let txScanURLPrefix = 'https://polygonscan.com/';
+// let validNetworkID = 137;
+// let chainIDRaw = web3.utils.toHex(validNetworkID);
+// let validChainID = chainIDRaw.toString()
+//
+// // Contract Addresses
+// let contractAddress = '0x1337AF99B61116CE034C1972EEc87cF348Dd668e';
+// let contractAddressDOOM = '0x1A0d31aB55C97E6fF28EE66CFf1C8aF2c80427e8';
+// let contractAddressKUtils = '0xf1860fc98e6926e0cc12f116cfa56492E22B4Fb4';
+// let contractAddressGroupsTokens = '0xFA2Cdf8D67065476f7A837E727dE82FF636753DD';
+// let contractAddressGroups = '0x305Abd049306d8faaF41e77799542A4aad09504e';
+// let contractAddressMessageData = '0x8c8Ab00A0CB155EfdD392CfF31aCE79566BBd1D4';
+// let contractAddressMessageFormat = '0xbBd034Dc8AEE8e767e8e9a8019AD6909CB2d452C';
+// let contractAddressPosts = '0x91C45a3FC077AA56D950194E6a619db60741bF96';
+// let contractAddressHashtags = '0xd6D3Ef7DDB6AF28141A41c94C2e47760ba92B994';
+// let contractAddressProfiles = '0xde089F038729dA20f8e26948142657Fd5Cfdd006';
+// let contractAddressLikes = '0x3EaD385484ed96cd5dC9Db4Eef83293d70eD8dfd';
+// let contractAddressTips = '0x5A43Cf5FC5D525801433D430766C14bf14FCcA34';
+// let contractAddressGroupPosts = '0x41CDCA1D8d2110d6ecc0A561a2231F6aF286a654';
+// let contractAddressHandles = '0x8BF41bDf693bfb06A326BF1ac7DD0277F4399903';
+// let contractAddressFollowers = '0x2567C252679E16CBF5665A900Cc3f2C31eD2e309';
+// let contractAddressBlocking = '0xCc88c3c3bdA9AFac710A490932068F4cD395C56e';
+// let contractAddressTagged = '0x2dd699A6b9fAB714AA42dC442e89ADb08B789b1d';
+// let contractAddressGroupMetadata = '0xAf7f29Eb8dc7AbE3b29000210fEF89998062002e';
+// let contractAddressBadges = '0xE24A1A3247AF274F8338e81F27554EC66162Cbf8';
+// let contractAddressAmulets = '0x934A1c65949114b5aC28f6a23f9A255497932494';
+// let contractAddressKultists = '0xBd8A40DeC54efd635E8AFC8bBA7F3f7072dBd101';
+// let contractAddressRaffleTix = '0x4D5fec0d054De436258C96ad2De59006078BA5dD';
+// let contractAddressSOULS = '0xd8cd041fAD61dCC02B1Fc67a3b1013d4720c7a50';
+// let contractAddressRewards = '0xF380e0C317AE3794312C09496D07d88D332861D0';
+// let contractAddressSampleContractHook = '0xE4af60AC5E9Fca01f9BDB18Ea8fC7C7E4B7e5f9d';
+
+
 const web3 = new Web3(window.ethereum);
 let web3inf = new Web3('https://polygon-mumbai.infura.io/v3/f5ec4715ed494400a7aa1a7ea57f5ac6');
 let web3alc = new Web3('https://polygon-mumbai.g.alchemy.com/v2/8nHav8t03vbfOzaPVws7Q6Aku_U0I0vY');
@@ -680,7 +716,7 @@ async function postMsg() {
         console.log("ERC20 TIP AMOUNT: ", erc20TipAmount);
         console.log("IN GROUPS: ", inGroups);
 
-        let resp = await contractKUTHULUPub.methods.postMsg(message, hashtags, tags, uri, [commentLevel, commentTo, repostOf, asGroup, erc20TipAmount.toString()], inGroups).send({from: walletAddress})
+        let resp = await contractKUTHULUPub.methods.postMsg(message, hashtags, tags, uri, [commentLevel, commentTo, repostOf, asGroup, erc20TipAmount.toString()], inGroups).send({from: walletAddress, value: tips * ethDec})
             .then(async (result) => {
                 console.log('Post Results: ', result);
 
@@ -1107,7 +1143,7 @@ async function tip(postID){
             tips = parseFloat(tips);
         }
 
-        let resp = await contractTipsPub.methods.addTipFromPost(postID).send({from: walletAddress})
+        let resp = await contractTipsPub.methods.addTipFromPost(postID).send({from: walletAddress, value: tips * ethDec})
             .then(result => {
                 endLoading();
                 // window.location.reload();
