@@ -111,9 +111,14 @@ document.querySelector(".inputGroups").addEventListener("paste", function(e) {
 
 
 async function validated(element){
+
   let text;
   let maxLength = 420;
   let currentlength = element.innerText.length;
+
+  if (isGroupSelected){
+    maxLength = 10000;
+  }
 
   if(currentlength <= 0){
     placeholder.style.display = "block";
@@ -153,7 +158,7 @@ async function validated(element){
 
   // Get all Tagged Accounts
   tagged = inputText.match(/@[\p{L}0-9]+/ugi);
-  //TODO: for ENS Resolving
+  // TODO: for ENS Resolving
   // tagged = inputText.match(/@[\p{L}0-9{.eth}]+/ugi);
 
   // Get all Groups
@@ -176,6 +181,22 @@ async function validated(element){
   if (tagged && tagged.length > 0) {
     let resolvedAddresses = '';
     for (let i = 0; i < tagged.length; i++) {
+      // if (tagged[i].length > 1){
+      //   console.log("Looking up: ", tagged[i]);
+      //   let userAddress = await contractHandles.methods.usrHandleMap(tagged[i].toLowerCase().replace('@','')).call()
+      //       .then(result => {
+      //         if (result != nullAddress) {
+      //           console.log('Got User Address of: ', result);
+      //           tagged[i] = '@' + result;
+      //           return result;
+      //         } else {
+      //           console.log('Got User Address of: ', result);
+      //         }
+      //       })
+      //       .catch(err => {
+      //         catchError('getMsgIDs-groups', err);
+      //       });
+      // }
       // TODO: FIX ENS Resolving
       // if (tagged[i].length - tagged[i].toLowerCase().indexOf('.eth') === 4 && tagged[i].toLowerCase().indexOf('.eth') > 0){
       //   let ensResolvedAddress = await web3ETH.eth.ens.getResolver(tagged[i].replaceAll('@','')).then(function (contract) {
